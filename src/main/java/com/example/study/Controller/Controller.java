@@ -2,6 +2,7 @@ package com.example.study.Controller;
 
 import com.example.study.Dto.UserDto;
 import com.example.study.Service.Service;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,12 +20,13 @@ public class Controller {
     }
 
     @PostMapping("/login_ok")
-    public String login_ok(@ModelAttribute UserDto userDto){
-        if(service.userDataLogin(userDto)){
-            System.out.println("Login Success");
+    public String login_ok(@ModelAttribute UserDto userDto, HttpSession session){
+        if(service.userDataLogin(userDto, session)){
+            //System.out.println("Login Success");
+            //System.out.println("login user : " + session.getAttribute("loginuser"));
             return "redirect:main.html";
         } else {
-            System.out.println("Login failed");
+            //System.out.println("Login failed");
             return "redirect:login.html";
         }
     }

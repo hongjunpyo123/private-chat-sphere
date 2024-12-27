@@ -3,6 +3,7 @@ package com.example.study.Service;
 import com.example.study.Dto.UserDto;
 import com.example.study.Entity.UserEntity;
 import com.example.study.Repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
@@ -25,13 +26,14 @@ public class Service {
         }
     }
 
-    public Boolean userDataLogin(UserDto userDto) {
+    public Boolean userDataLogin(UserDto userDto, HttpSession session){
         userEntity = userRepository.findBynickname(userDto.getNickname()).orElse(null);
 
         if(userEntity == null){
             return false;
         } else {
             if(userEntity.getPassword().equals(userDto.getPassword())){
+                session.setAttribute("loginuser", userDto.getNickname());
                 return true;
             } else {
                 return false;
