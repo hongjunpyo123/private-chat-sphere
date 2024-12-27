@@ -18,6 +18,17 @@ public class Controller {
         return "login.html";
     }
 
+    @PostMapping("/login_ok")
+    public String login_ok(@ModelAttribute UserDto userDto){
+        if(service.userDataLogin(userDto)){
+            System.out.println("Login Success");
+            return "redirect:main.html";
+        } else {
+            System.out.println("Login failed");
+            return "redirect:login.html";
+        }
+    }
+
     @GetMapping("/register")
     public String register(){
         return "register.html";
