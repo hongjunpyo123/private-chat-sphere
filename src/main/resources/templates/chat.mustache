@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, viewport-fit=cover">
     <title>채팅방</title>
     <style>
         * {
@@ -14,10 +14,17 @@
 
         body {
             background-color: #f5f6f8;
-            height: 100vh;
+            height: 100%;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.8s ease-out forwards;
+            position: relative;
+        }
+
+        html {
+            height: -webkit-fill-available;
         }
 
         .chat-header {
@@ -34,6 +41,32 @@
             justify-content: space-between;
         }
 
+        .chat-container {
+            flex: 1;
+            padding: 16px;
+            margin: 60px 0 30px 0;
+            overflow-y: auto;
+            position: fixed; /* 추가 */
+            top: 0; /* 추가 */
+            bottom: 80px; /* 추가 - 입력창 높이만큼 여백 */
+            left: 0; /* 추가 */
+            right: 0; /* 추가 */
+        }
+
+        .chat-input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 12px;
+            border-top: 1px solid #e1e1e1;
+            display: flex;
+            gap: 8px;
+            z-index: 1000; /* 추가 */
+        }
+
+        /* 나머지 스타일은 동일하게 유지 */
         .back-button {
             color: white;
             text-decoration: none;
@@ -58,13 +91,6 @@
         .room-title {
             font-size: 16px;
             font-weight: bold;
-        }
-
-        .chat-container {
-            flex: 1;
-            padding: 16px;
-            margin: 60px 0 80px 0;
-            overflow-y: auto;
         }
 
         .message {
@@ -111,18 +137,6 @@
             font-size: 11px;
             color: #999;
             margin: 0 4px;
-        }
-
-        .chat-input-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: white;
-            padding: 12px;
-            border-top: 1px solid #e1e1e1;
-            display: flex;
-            gap: 8px;
         }
 
         .chat-input {
@@ -199,6 +213,7 @@
     </style>
 </head>
 <body>
+<!-- 나머지 HTML 내용은 동일하게 유지 -->
 <header class="chat-header">
     <a href="/main" class="back-button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
