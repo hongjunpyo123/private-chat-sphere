@@ -23,9 +23,8 @@ public class Controller {
     @PostMapping("/login_ok")
     public String login_ok(@ModelAttribute UserDto userDto, HttpSession session, Model model){
         if(service.userDataLogin(userDto, session)){
-            //System.out.println("Login Success");
-            //System.out.println("login user : " + session.getAttribute("loginuser"));
             model.addAttribute("loginuser", session.getAttribute("loginuser"));
+            model.addAttribute("chatroom", service.chatroom_findAll());
             return "main";
         } else {
             //System.out.println("Login failed");
@@ -52,6 +51,7 @@ public class Controller {
     @GetMapping("/main")
     public String main(Model model, HttpSession session){
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        model.addAttribute("chatroom", service.chatroom_findAll());
         return "main";
     }
 }

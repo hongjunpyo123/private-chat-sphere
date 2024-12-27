@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- 기존 head 내용 유지 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
     <style>
+        /* 기존 스타일 유지 */
         * {
             margin: 0;
             padding: 0;
@@ -50,9 +52,44 @@
             font-weight: bold;
         }
 
+        .search-container {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 40px;
+            border: 2px solid #e1e1e1;
+            border-radius: 12px;
+            font-size: 16px;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3182f6;
+            box-shadow: 0 2px 4px rgba(49, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+        }
+
         .post-list {
             list-style: none;
-            margin-bottom: 64px; /* 하단바 공간 확보 */
+            margin-bottom: 64px;
         }
 
         .post-item {
@@ -109,12 +146,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: all 0.2s ease;
+            z-index: 1000;
         }
 
-        .fab:hover {
+        .fab:active {
             background-color: #1c6feb;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(2px);  /* 위로 올라가는 대신 아래로 내려가도록 변경 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
 
         .bottom-nav {
@@ -159,6 +197,64 @@
             background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21h13c-.5-4-2.5-7-6.5-7s-6 3-6.5 7z"></path></svg>') no-repeat center;
             background-size: contain;
         }
+
+        /* 새로 추가된 스타일 */
+        .post-form {
+            position: fixed;
+            bottom: 150px;
+            right: 24px;
+            width: 300px;
+            background-color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 999;
+        }
+
+        .post-form.visible {
+            display: block;
+        }
+
+        .post-form input {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .post-form input:focus {
+            outline: none;
+            border-color: #3182f6;
+        }
+
+        .post-form button {
+            width: 100%;
+            padding: 8px;
+            background-color: #3182f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .post-form button:hover {
+            background-color: #1c6feb;
+        }
+
+        .form-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
     </style>
 </head>
 <body>
@@ -168,31 +264,32 @@
         <span class="username">{{loginuser}}님</span>
     </header>
 
-    <ul class="post-list">
+    <form action="/search" method="get">
+        <div class="search-container">
+            <input type="search" class="search-input" name="search" placeholder="검색어를 입력하세요">
+            <button type="submit" class="search-icon"></button>
+        </div>
+    </form>
+
+    {{#chatroom}}
         <li class="post-item">
             <div class="post-content">
-                <div class="post-title">게시글 제목 1</div>
-                <div class="post-author">작성자: 홍길동</div>
+                <div class="post-title">{{title}}</div>
+                <div class="post-author">작성자: {{writer}}</div>
             </div>
             <div class="post-action">→</div>
         </li>
-        <li class="post-item">
-            <div class="post-content">
-                <div class="post-title">게시글 제목 2</div>
-                <div class="post-author">작성자: 김철수</div>
-            </div>
-            <div class="post-action">→</div>
-        </li>
-        <li class="post-item">
-            <div class="post-content">
-                <div class="post-title">게시글 제목 3</div>
-                <div class="post-author">작성자: 이영희</div>
-            </div>
-            <div class="post-action">→</div>
-        </li>
-    </ul>
+    {{/chatroom}}
 
     <div class="fab">+</div>
+
+    <!-- 새로 추가된 폼 -->
+    <form class="post-form" action="/chatroom_create" method="post">
+        <h3 class="form-title">채팅방 생성</h3>
+        <input type="text" name="title" placeholder="주제를 입력하세요" required>
+        <input type="password" name="password" placeholder="입장 비밀번호를 입력하세요" required>
+        <button type="submit">작성하기</button>
+    </form>
 </div>
 
 <div class="bottom-nav">
@@ -205,5 +302,12 @@
         마이페이지
     </a>
 </div>
+
+<script>
+    document.querySelector('.fab').addEventListener('click', function() {
+        const form = document.querySelector('.post-form');
+        form.classList.toggle('visible');
+    });
+</script>
 </body>
 </html>
