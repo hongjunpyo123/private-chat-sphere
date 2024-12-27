@@ -27,6 +27,7 @@
             margin: 0 auto;
             width: 100%;
             flex: 1;
+            animation: fadeIn 0.8s ease-out forwards;
         }
 
         .header {
@@ -263,6 +264,17 @@
             color: inherit;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -274,13 +286,13 @@
 
     <form action="/chatroom_search" method="get">
         <div class="search-container">
-            <input type="search" class="search-input" name="search" placeholder="검색어를 입력하세요">
+            <input type="search" class="search-input" name="search" placeholder="검색어를 입력하세요" autocomplete="off">
             <button type="submit" class="search-icon"></button>
         </div>
     </form>
 
     {{#chatroom}}
-        <a href="/" id="chatroom">
+        <a href="/chat/{{id}}" id="chatroom">
             <li class="post-item">
                 <div class="post-content">
                     <div class="post-title">{{title}}</div>

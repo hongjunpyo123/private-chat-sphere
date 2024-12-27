@@ -74,4 +74,11 @@ public class Controller {
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         return "mypage";
     }
+
+    @GetMapping("/chat/{id}")
+    public String chat(@PathVariable Long id, Model model, HttpSession session){
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        model.addAttribute("chat", service.ChatFindById(id));
+        return "chat";
+    }
 }

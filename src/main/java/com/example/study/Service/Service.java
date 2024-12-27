@@ -68,6 +68,10 @@ public class Service {
         return chatRoomRepository.findByTitleContaining(search);
     }
 
+    public ChatRoomEntity ChatFindById(Long id){
+        return chatRoomRepository.findById(id).orElse(null);
+    }
+
 
 
 
