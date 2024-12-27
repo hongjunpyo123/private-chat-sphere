@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f6f8;  /* 연한 회색 배경으로 변경 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            padding: 24px 16px;
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+            background-color: white;  /* 컨테이너 배경색 추가 */
+            margin-top: 16px;         /* 상단 여백 추가 */
+            border-radius: 24px;      /* 모서리 둥글게 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);  /* 미묘한 그림자 */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            margin-top: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e1e1e1;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3182f6;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666666;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3182f6;  /* 좀 더 선명한 파란색으로 변경 */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;  /* 폰트 두께 증가 */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);  /* 미묘한 그림자 추가 */
+        }
+
+        .login-button:hover {
+            background-color: #1c6feb;  /* 호버 색상 변경 */
+            transform: translateY(-1px);  /* 호버시 살짝 위로 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .signup-link a {
+            color: #4285f4;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>로그인</h1>
+    </header>
+
+    <form id="loginForm" action="" method="post">
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input
+                    type="text"
+                    id="nickname"
+                    name="nickname"
+                    placeholder="닉네임을 입력하세요"
+                    required
+                    autocomplete="off"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <div class="password-wrapper">
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="비밀번호를 입력하세요"
+                        required
+                >
+                <button type="button" class="password-toggle" id="passwordToggle">
+                    👁
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="login-button">로그인</button>
+
+        <div class="signup-link">
+            <a href="/register">회원가입하기</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        let passwordVisible = false;
+
+        passwordToggle.addEventListener('click', function() {
+            passwordVisible = !passwordVisible;
+            passwordInput.type = passwordVisible ? 'text' : 'password';
+            passwordToggle.textContent = passwordVisible ? '🔒' : '👁';
+        });
+    });
+</script>
+</body>
+</html>
