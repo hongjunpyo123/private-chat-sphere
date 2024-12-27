@@ -77,8 +77,26 @@ public class Controller {
 
     @GetMapping("/chat/{id}")
     public String chat(@PathVariable Long id, Model model, HttpSession session){
+        session.setAttribute("chatid", id);
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         model.addAttribute("chat", service.ChatFindById(id));
-        return "chat";
+        if(service.ChatPwEmpty(id)){
+            return "chat";
+        } else {
+            return "chat_password";
+        }
+    }
+
+    @GetMapping("/chat1")
+    public String chat1(@RequestParam String password, Model model, HttpSession session){
+        Long id = (Long) session.getAttribute("chatid");
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        model.addAttribute("chat", service.ChatFindById(id));
+        model.addAttribute("chatroom", service.chatroom_findAll());
+        if(service.ChatPwCmp(id, password)){
+            return "chat";
+        } else {
+            return "main";
+        }
     }
 }

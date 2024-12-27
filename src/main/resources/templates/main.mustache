@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <!-- 기존 head 내용 유지 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
     <style>
-        /* 기존 스타일 유지 */
         * {
             margin: 0;
             padding: 0;
@@ -27,6 +25,7 @@
             margin: 0 auto;
             width: 100%;
             flex: 1;
+            margin-bottom: 120px;
             animation: fadeIn 0.8s ease-out forwards;
         }
 
@@ -147,12 +146,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: all 0.2s ease;
-            z-index: 1000;
+            z-index: 1001;
         }
 
         .fab:active {
             background-color: #1c6feb;
-            transform: translateY(2px);  /* 위로 올라가는 대신 아래로 내려가도록 변경 */
+            transform: translateY(2px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
 
@@ -167,6 +166,7 @@
             justify-content: space-around;
             padding: 8px 0;
             box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
         }
 
         .bottom-nav a {
@@ -198,7 +198,6 @@
             background-size: contain;
         }
 
-        /* 새로 추가된 스타일 */
         .post-form {
             position: fixed;
             bottom: 150px;
@@ -260,7 +259,7 @@
         }
 
         a {
-            text-decoration: none;  /* 밑줄 제거 */
+            text-decoration: none;
             color: inherit;
         }
 
@@ -274,7 +273,6 @@
                 transform: translateY(0);
             }
         }
-
     </style>
 </head>
 <body>
@@ -305,21 +303,21 @@
     {{^chatroom}}
         <div class="post-item">
             <div class="post-content">
-<!--                비어있을경우-->
+                <div class="post-title">채팅방이 존재하지 않습니다.</div>
+                <div class="post-author"></div>
             </div>
         </div>
     {{/chatroom}}
-
-    <div class="fab">+</div>
-
-    <!-- 새로 추가된 폼 -->
-    <form class="post-form" action="/chatroom_create" method="post">
-        <h3 class="form-title">채팅방 생성</h3>
-        <input type="text" name="title" placeholder="주제를 입력하세요" required>
-        <input type="password" name="password" placeholder="입장 비밀번호">
-        <button type="submit">작성하기</button>
-    </form>
 </div>
+
+<!-- container 밖으로 이동 -->
+<div class="fab">+</div>
+<form class="post-form" action="/chatroom_create" method="post">
+    <h3 class="form-title">채팅방 생성</h3>
+    <input type="text" name="title" placeholder="주제를 입력하세요" required>
+    <input type="password" name="password" placeholder="입장 비밀번호">
+    <button type="submit">작성하기</button>
+</form>
 
 <div class="bottom-nav">
     <a href="/main">
@@ -341,7 +339,6 @@
         const form = document.querySelector('.post-form');
         form.classList.toggle('visible');
     });
-</script>
 </script>
 </body>
 </html>

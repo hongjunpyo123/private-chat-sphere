@@ -72,6 +72,25 @@ public class Service {
         return chatRoomRepository.findById(id).orElse(null);
     }
 
+    public Boolean ChatPwCmp(Long id, String password){
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(id).orElse(null);
+        if(chatRoomEntity.getPassword().equals(password)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public Boolean ChatPwEmpty(Long id){
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(id).orElse(null);
+        if(chatRoomEntity.getPassword().isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
 
