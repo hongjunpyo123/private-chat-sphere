@@ -68,4 +68,10 @@ public class Controller {
         model.addAttribute("chatroom", service.chatroom_find(search));
         return "main";
     }
+
+    @GetMapping("/mypage")
+    public String mypage(Model model, HttpSession session){
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        return "mypage";
+    }
 }
