@@ -48,4 +48,10 @@ public class Controller {
             return "redirect:register.html";
         }
     }
+
+    @GetMapping("/main")
+    public String main(Model model, HttpSession session){
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        return "main";
+    }
 }
