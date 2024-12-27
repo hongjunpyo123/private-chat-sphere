@@ -255,6 +255,15 @@
             border-bottom: 1px solid #e1e1e1;
         }
 
+        #chatroom:hover {
+            background-color: #f5f5f5;
+        }
+
+        a {
+            text-decoration: none;  /* 밑줄 제거 */
+            color: inherit;
+        }
+
     </style>
 </head>
 <body>
@@ -264,7 +273,7 @@
         <span class="username">{{loginuser}}님</span>
     </header>
 
-    <form action="/search" method="get">
+    <form action="/chatroom_search" method="get">
         <div class="search-container">
             <input type="search" class="search-input" name="search" placeholder="검색어를 입력하세요">
             <button type="submit" class="search-icon"></button>
@@ -272,13 +281,22 @@
     </form>
 
     {{#chatroom}}
-        <li class="post-item">
+        <a href="/" id="chatroom">
+            <li class="post-item">
+                <div class="post-content">
+                    <div class="post-title">{{title}}</div>
+                    <div class="post-author">생성자: {{writer}}</div>
+                </div>
+                <div class="post-action">→</div>
+            </li>
+        </a>
+    {{/chatroom}}
+    {{^chatroom}}
+        <div class="post-item">
             <div class="post-content">
-                <div class="post-title">{{title}}</div>
-                <div class="post-author">작성자: {{writer}}</div>
+<!--                비어있을경우-->
             </div>
-            <div class="post-action">→</div>
-        </li>
+        </div>
     {{/chatroom}}
 
     <div class="fab">+</div>
@@ -287,7 +305,7 @@
     <form class="post-form" action="/chatroom_create" method="post">
         <h3 class="form-title">채팅방 생성</h3>
         <input type="text" name="title" placeholder="주제를 입력하세요" required>
-        <input type="password" name="password" placeholder="입장 비밀번호를 입력하세요" required>
+        <input type="password" name="password" placeholder="입장 비밀번호">
         <button type="submit">작성하기</button>
     </form>
 </div>
@@ -304,10 +322,15 @@
 </div>
 
 <script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
     document.querySelector('.fab').addEventListener('click', function() {
         const form = document.querySelector('.post-form');
         form.classList.toggle('visible');
     });
+</script>
 </script>
 </body>
 </html>

@@ -177,6 +177,10 @@
 </div>
 
 <script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('loginForm');
         const passwordInput = document.getElementById('password');

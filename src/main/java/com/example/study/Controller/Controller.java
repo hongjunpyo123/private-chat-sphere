@@ -1,14 +1,12 @@
 package com.example.study.Controller;
 
+import com.example.study.Dto.ChatRoomDto;
 import com.example.study.Dto.UserDto;
 import com.example.study.Service.Service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -52,6 +50,22 @@ public class Controller {
     public String main(Model model, HttpSession session){
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         model.addAttribute("chatroom", service.chatroom_findAll());
+        return "main";
+    }
+
+    @PostMapping("/chatroom_create")
+    public String chatroom_create(@ModelAttribute ChatRoomDto chatRoomDto, HttpSession session, Model model){
+        chatRoomDto.setWriter((String) session.getAttribute("loginuser"));
+        service.ChatRoomInsert(chatRoomDto, session);
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        model.addAttribute("chatroom", service.chatroom_findAll());
+        return "main";
+    }
+
+    @GetMapping("/chatroom_search")
+    public String chatroom_search(@RequestParam String search, Model model, HttpSession session){
+        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        model.addAttribute("chatroom", service.chatroom_find(search));
         return "main";
     }
 }

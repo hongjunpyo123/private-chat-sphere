@@ -1,5 +1,6 @@
 package com.example.study.Service;
 
+import com.example.study.Dto.ChatRoomDto;
 import com.example.study.Dto.UserDto;
 import com.example.study.Entity.ChatRoomEntity;
 import com.example.study.Entity.UserEntity;
@@ -8,6 +9,7 @@ import com.example.study.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +52,20 @@ public class Service {
     }
 
     public List<ChatRoomEntity> chatroom_findAll(){
-        return chatRoomRepository.findAll();
+        return chatRoomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    public Boolean ChatRoomInsert(ChatRoomDto chatRoomDto,HttpSession session){
+        try{
+            chatRoomRepository.save(chatRoomDto.toEntity());
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public List<ChatRoomEntity> chatroom_find(String search){
+        return chatRoomRepository.findByTitleContaining(search);
     }
 
 
