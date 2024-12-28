@@ -73,8 +73,18 @@ public class Service {
     }
 
     public Boolean ChatRoomInsert(ChatRoomDto chatRoomDto,HttpSession session){
+        MessageEntity messageEntity = new MessageEntity();
+        ChatRoomEntity chatRoomEntity;
+
         try{
-            chatRoomRepository.save(chatRoomDto.toEntity());
+            chatRoomDto.setCount(0L);
+            chatRoomEntity = chatRoomRepository.save(chatRoomDto.toEntity());
+            messageEntity.setDate("00:00");
+            messageEntity.setChatRoomId(chatRoomEntity.getId());
+            messageEntity.setMessage("채팅방이 생성되었습니다.");
+            messageEntity.setWriter("System");
+            messageRepository.save(messageEntity);
+
             return true;
         } catch (Exception e){
             return false;
@@ -165,7 +175,7 @@ public class Service {
         MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
 
         if(chatRoomCount != count){
-            session.setAttribute("count", chatRoomCount);
+            session.setAttribute("count", count+1);
             return messageDto;
         } else {
             return null;
