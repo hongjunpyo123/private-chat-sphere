@@ -78,8 +78,16 @@ public class Controller {
 
     @GetMapping("/chatroom_search")
     public String chatroom_search(@RequestParam String search, Model model, HttpSession session){
+
+        List<ChatRoomEntity> chatRoomEntity = service.chatroom_find(search);
+        for (ChatRoomEntity chatRoom : chatRoomEntity) {
+            if(chatRoom.getPassword().isEmpty()){
+                chatRoom.setPassword(null);
+            }
+        }
+
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chatroom", service.chatroom_find(search));
+        model.addAttribute("chatroom", chatRoomEntity);
         return "main";
     }
 
