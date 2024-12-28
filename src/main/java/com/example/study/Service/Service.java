@@ -17,6 +17,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.StyledEditorKit;
+import java.lang.management.LockInfo;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Service {
     private MessageRepository messageRepository;
 
     private UserEntity userEntity = new UserEntity();
+    private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
     public Boolean userDataInsert(UserDto userDto, HttpSession session){ //회원가입
         session.setAttribute("loginuser", userDto.getNickname());//회원가입
@@ -124,8 +126,17 @@ public class Service {
     }
 
     public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session) {
+
+        //채팅방을 찾고 count를 1 증가시킨 후 저장
+        chatRoomEntity = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
+        Long count = chatRoomEntity.getCount() + 1;
+        chatRoomEntity.setCount(count);
+        chatRoomRepository.save(chatRoomEntity);
+        //----------------------------------------------
+
         messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))); //현재 시간 저장
         messageDto.setWriter((String) session.getAttribute("loginuser")); //세션에 저장된 로그인한 유저의 닉네임을 작성자로 저장
+
         try{
             messageRepository.save(messageDto.toEntity());
             return true;
