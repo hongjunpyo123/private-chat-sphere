@@ -25,13 +25,13 @@ public class Service {
 
     private UserEntity userEntity = new UserEntity();
 
-    public Boolean userDataInsert(UserDto userDto){
+    public Boolean userDataInsert(UserDto userDto){ //회원가입
         try{
             if(userRepository.findBynickname(userDto.getNickname()).orElse(null) != null){
-                return false;
+                return false; //중복된 닉네임이 존재할 경우 false 반환
             } else {
                 userRepository.save(userDto.toEntity());
-                return true;
+                return true; //닉네임이 중복되지 않았을 경우 데이터베이스에 저장 후 true 반환
             }
         } catch (DataIntegrityViolationException e){
             System.out.println("Error: " + e);
@@ -39,14 +39,14 @@ public class Service {
         }
     }
 
-    public Boolean userDataLogin(UserDto userDto, HttpSession session){
+    public Boolean userDataLogin(UserDto userDto, HttpSession session){ //로그인
         userEntity = userRepository.findBynickname(userDto.getNickname()).orElse(null);
 
         if(userEntity == null){
             return false;
         } else {
             if(userEntity.getPassword().equals(userDto.getPassword())){
-                session.setAttribute("loginuser", userDto.getNickname());
+                session.setAttribute("loginuser", userDto.getNickname()); //세션에 로그인한 유저의 닉네임 저장
                 return true;
             } else {
                 return false;
@@ -55,7 +55,7 @@ public class Service {
     }
 
     public List<ChatRoomEntity> chatroom_findAll(){
-        return chatRoomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        return chatRoomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));//채팅방 목록을 최신순으로 정렬하여 반환
     }
 
     public Boolean ChatRoomInsert(ChatRoomDto chatRoomDto,HttpSession session){
@@ -85,7 +85,7 @@ public class Service {
         }
     }
 
-    public Boolean ChatPwEmpty(Long id){
+    public Boolean ChatPwEmpty(Long id){//채팅방 입장 비밀번호가 empty인지 확인 후 반환
         ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(id).orElse(null);
         if(chatRoomEntity.getPassword().isEmpty()) {
             return true;
@@ -93,8 +93,5 @@ public class Service {
             return false;
         }
     }
-
-
-
 
 }

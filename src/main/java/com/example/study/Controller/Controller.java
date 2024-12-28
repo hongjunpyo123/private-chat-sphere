@@ -2,11 +2,14 @@ package com.example.study.Controller;
 
 import com.example.study.Dto.ChatRoomDto;
 import com.example.study.Dto.UserDto;
+import com.example.study.Entity.ChatRoomEntity;
 import com.example.study.Service.Service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -21,8 +24,7 @@ public class Controller {
     @PostMapping("/login_ok")
     public String login_ok(@ModelAttribute UserDto userDto, HttpSession session, Model model){
         if(service.userDataLogin(userDto, session)){
-            model.addAttribute("loginuser", session.getAttribute("loginuser"));
-            model.addAttribute("chatroom", service.chatroom_findAll());
+            main(model, session);
             return "main";
         } else {
             //System.out.println("Login failed");
@@ -48,8 +50,15 @@ public class Controller {
 
     @GetMapping("/main")
     public String main(Model model, HttpSession session){
+        List<ChatRoomEntity> chatRoomEntity = service.chatroom_findAll();
+        for (ChatRoomEntity chatRoom : chatRoomEntity) {
+            if(chatRoom.getPassword().isEmpty()){
+                chatRoom.setPassword(null);
+            }
+        }
+
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chatroom", service.chatroom_findAll());
+        model.addAttribute("chatroom", chatRoomEntity);
         return "main";
     }
 
@@ -57,8 +66,7 @@ public class Controller {
     public String chatroom_create(@ModelAttribute ChatRoomDto chatRoomDto, HttpSession session, Model model){
         chatRoomDto.setWriter((String) session.getAttribute("loginuser"));
         service.ChatRoomInsert(chatRoomDto, session);
-        model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chatroom", service.chatroom_findAll());
+        main(model, session);
         return "main";
     }
 

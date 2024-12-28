@@ -293,7 +293,9 @@
         <a href="/chat/{{id}}" id="chatroom">
             <li class="post-item">
                 <div class="post-content">
-                    <div class="post-title">{{title}}</div>
+                    <div class="post-title">
+                        {{#password}}🔒{{/password}}{{title}}
+                    </div>
                     <div class="post-author">생성자: {{writer}}</div>
                 </div>
                 <div class="post-action">❯</div>
