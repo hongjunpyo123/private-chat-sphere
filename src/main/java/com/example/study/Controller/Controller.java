@@ -66,9 +66,14 @@ public class Controller {
     @PostMapping("/chatroom_create")
     public String chatroom_create(@ModelAttribute ChatRoomDto chatRoomDto, HttpSession session, Model model){
         chatRoomDto.setWriter((String) session.getAttribute("loginuser"));
-        service.ChatRoomInsert(chatRoomDto, session);
-        main(model, session);
-        return "";
+
+        //-----title, password길이 검증 로직
+        if(chatRoomDto.getTitle().length() <= 40 && chatRoomDto.getPassword().length() <= 10){
+            service.ChatRoomInsert(chatRoomDto, session);
+        }
+        //-------------------------------
+
+        return "redirect:/main";
     }
 
     @GetMapping("/chatroom_search")

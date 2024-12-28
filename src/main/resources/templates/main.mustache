@@ -296,7 +296,7 @@
                     <div class="post-title">
                         {{#password}}🔒{{/password}}{{title}}
                     </div>
-                    <div class="post-author">생성자: {{writer}}</div>
+                    <div class="post-author">만든이: {{writer}}</div>
                 </div>
                 <div class="post-action">❯</div>
             </li>
@@ -319,8 +319,8 @@
 <div class="fab">+</div>
 <form class="post-form" action="/chatroom_create" method="post">
     <h3 class="form-title">채팅방 생성</h3>
-    <input type="text" name="title" placeholder="주제를 입력하세요" required>
-    <input type="password" name="password" placeholder="입장 비밀번호">
+    <input type="text" name="title" placeholder="주제를 입력하세요(40자 이내)" required>
+    <input type="password" name="password" placeholder="입장 비밀번호(10자 이내)">
     <button type="submit">작성하기</button>
 </form>
 
