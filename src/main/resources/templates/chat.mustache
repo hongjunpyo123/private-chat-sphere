@@ -253,31 +253,54 @@
     </form>
 </div>
 
-<!-- 마지막 script 부분만 수정 -->
 <script>
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-        history.go(1);
-    };
 
-    // 페이지 로딩 시 스크롤 맨 아래로
-    document.addEventListener('DOMContentLoaded', () => {
-        const chatContainer = document.querySelector('.chat-container');
-        if (chatContainer) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    });
+    const chatContainer = document.querySelector('.chat-container');
 
-    // 전송 버튼 클릭 이벤트
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
+function updateChat() {
+    fetch('/messageFindLast')
+        .then(response => response.json())
+        .then(msg => {
+            if (msg !== null) {  // msg가 null이 아닐 때만 실행
+                chatContainer.insertAdjacentHTML('beforeend', `
+                    <div class="message received">
+                        <div class="message-sender">${msg.writer}</div>
+                        <div class="message-content">${msg.message}</div>
+                        <div class="message-time">${msg.date}</div>
+                    </div>
+                `);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+}
 
-    // 엔터 키 이벤트
-    document.querySelector('.chat-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
+setInterval(updateChat, 500);
+
+
+
+history.pushState(null, null, location.href);
+window.onpopstate = function () {
+    history.go(1);
+};
+
+// 페이지 로딩 시 스크롤 맨 아래로
+document.addEventListener('DOMContentLoaded', () => {
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+});
+
+// 전송 버튼 클릭 이벤트
+document.querySelector('.send-button').addEventListener('click', sendMessage);
+
+// 엔터 키 이벤트
+document.querySelector('.chat-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
 </script>
 </body>
 </html>

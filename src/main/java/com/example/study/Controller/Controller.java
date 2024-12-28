@@ -45,7 +45,7 @@ public class Controller {
 
     @GetMapping("/main")
     public String main(Model model, HttpSession session){
-        List<ChatRoomEntity> chatRoomEntity = service.chatroom_findAll();
+        List<ChatRoomEntity> chatRoomEntity = service.chatroom_findAll(session);
         for (ChatRoomEntity chatRoom : chatRoomEntity) {
             if(chatRoom.getPassword().isEmpty()){
                 chatRoom.setPassword(null);
@@ -105,8 +105,7 @@ public class Controller {
 
     @GetMapping("/chat/{id}")
     public String chat(@PathVariable Long id, Model model, HttpSession session){
-        ChatRoomEntity chatRoomEntity = service.ChatFindById(id);
-        session.setAttribute("chatid", id);
+        ChatRoomEntity chatRoomEntity = service.ChatFindById(id, session);
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         model.addAttribute("chat", chatRoomEntity);
         model.addAttribute("chatinfo", service.chatMessageFindAll(id));
@@ -122,8 +121,8 @@ public class Controller {
         session.setAttribute("password", password);
         Long id = (Long) session.getAttribute("chatid");
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chat", service.ChatFindById(id));
-        model.addAttribute("chatroom", service.chatroom_findAll());
+        model.addAttribute("chat", service.ChatFindById(id, session));
+        model.addAttribute("chatroom", service.chatroom_findAll(session));
         if(service.ChatPwCmp(id, password)){
             return "redirect:/chat/" + session.getAttribute("chatid");
         } else {

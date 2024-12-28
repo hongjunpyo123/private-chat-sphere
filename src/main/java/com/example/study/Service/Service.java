@@ -10,6 +10,7 @@ import com.example.study.Repository.ChatRoomRepository;
 import com.example.study.Repository.MessageRepository;
 import com.example.study.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Setter
 @org.springframework.stereotype.Service
 public class Service {
     @Autowired
@@ -35,8 +37,6 @@ public class Service {
 
     private UserEntity userEntity = new UserEntity();
     private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
-
-    private Long count = 0L; //채팅방 count를 비교하기 위한 변수
 
     public Boolean userDataInsert(UserDto userDto, HttpSession session){ //회원가입
         session.setAttribute("loginuser", userDto.getNickname());//회원가입
@@ -68,12 +68,11 @@ public class Service {
         }
     }
 
-    public List<ChatRoomEntity> chatroom_findAll(){
+    public List<ChatRoomEntity> chatroom_findAll(HttpSession session){
         return chatRoomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));//채팅방 목록을 최신순으로 정렬하여 반환
     }
 
     public Boolean ChatRoomInsert(ChatRoomDto chatRoomDto,HttpSession session){
-        chatRoomDto.setCount(0L); //채팅방 생성 시 count는 0으로 초기화
         try{
             chatRoomRepository.save(chatRoomDto.toEntity());
             return true;
@@ -89,7 +88,14 @@ public class Service {
         return chatRoomRepository.findByTitleContaining(search);
     }
 
-    public ChatRoomEntity ChatFindById(Long id){
+    public ChatRoomEntity ChatFindById(Long id, HttpSession session){
+
+        session.setAttribute("chatid", id);
+        ChatRoomEntity chatRoomEntity1 = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
+        Long count = chatRoomEntity1.getCount();
+        session.setAttribute("count", count);
+
+
         return chatRoomRepository.findById(id).orElse(null);
     }
 
@@ -153,15 +159,16 @@ public class Service {
     public MessageDto messageFindLast(HttpSession session){
         Long chatRoomId = (Long) session.getAttribute("chatid");
         String writer = (String) session.getAttribute("loginuser");
+        Long count = (Long) session.getAttribute("count");
         Long chatRoomCount = chatRoomRepository.findById(chatRoomId).orElse(null).getCount();
 
-        MessageDto messageDto = messageRepository.findTop1ByOrderByIdDesc().toDto();
+        MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
 
-        if(chatRoomCount != this.count){
-            this.count = chatRoomCount;
+        if(chatRoomCount != count){
+            session.setAttribute("count", chatRoomCount);
             return messageDto;
         } else {
-            return messageDto;
+            return null;
         }
     }
 
