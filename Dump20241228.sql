@@ -54,8 +54,9 @@ CREATE TABLE `chatroom` (
   `password` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `writer` varchar(255) DEFAULT NULL,
+  `count` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,8 +65,61 @@ CREATE TABLE `chatroom` (
 
 LOCK TABLES `chatroom` WRITE;
 /*!40000 ALTER TABLE `chatroom` DISABLE KEYS */;
-INSERT INTO `chatroom` VALUES (13,'111','저녁 술모임 구함 비번 111','Hello'),(14,'','아니..','Hello'),(15,'','1','Hello'),(16,'','2','Hello'),(17,'','3','Hello'),(18,'','4','Hello'),(19,'','5','Hello'),(20,'','6','Hello');
+INSERT INTO `chatroom` VALUES (38,'1','1','1',0),(39,'','2','1',0),(40,'','3','1',0),(41,'test','Test','Hjp',0),(42,'h','H','1',0),(43,'','이번 계엄사때 어떤지 얘기나눠요','1',0);
 /*!40000 ALTER TABLE `chatroom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `date` varchar(255) DEFAULT NULL,
+  `chat_room_id` bigint DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `writer` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `message`
+--
+
+LOCK TABLES `message` WRITE;
+/*!40000 ALTER TABLE `message` DISABLE KEYS */;
+INSERT INTO `message` VALUES (1,'17:26',40,'12','1'),(2,'17:29',40,'13','1'),(3,'17:29',39,'34','1'),(4,'17:30',40,'3','1'),(5,'17:30',40,'17','1'),(6,'17:31',41,'162','Hjp'),(7,'17:32',41,'726','Hjp'),(8,'17:41',42,'13','1'),(9,'17:41',42,'28726','1'),(10,'17:43',42,'안녕','1'),(11,'17:43',42,'반가워','1'),(12,'17:43',39,'안녕','1'),(13,'17:43',39,'반가워','1'),(14,'17:51',43,'네','1');
+/*!40000 ALTER TABLE `message` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `message_entity`
+--
+
+DROP TABLE IF EXISTS `message_entity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message_entity` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `date` varchar(255) DEFAULT NULL,
+  `chat_room_id` bigint DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `writer` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `message_entity`
+--
+
+LOCK TABLES `message_entity` WRITE;
+/*!40000 ALTER TABLE `message_entity` DISABLE KEYS */;
+/*!40000 ALTER TABLE `message_entity` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -88,7 +142,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('0721hjp','h9205920h#'),('123','123'),('Hello','1'),('HIHI','123'),('Kame','kk'),('홍당무','123'),('홍준표','1234');
+INSERT INTO `user` VALUES ('1','1'),('Hjp','1'),('Qwer','1'),('홍준표','1234');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -101,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-28  1:15:03
+-- Dump completed on 2024-12-28 17:59:00
