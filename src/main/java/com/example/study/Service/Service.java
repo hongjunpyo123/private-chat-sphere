@@ -25,7 +25,8 @@ public class Service {
 
     private UserEntity userEntity = new UserEntity();
 
-    public Boolean userDataInsert(UserDto userDto){ //회원가입
+    public Boolean userDataInsert(UserDto userDto, HttpSession session){ //회원가입
+        session.setAttribute("loginuser", userDto.getNickname());//회원가입
         try{
             if(userRepository.findBynickname(userDto.getNickname()).orElse(null) != null){
                 return false; //중복된 닉네임이 존재할 경우 false 반환
@@ -90,6 +91,17 @@ public class Service {
         if(chatRoomEntity.getPassword().isEmpty()) {
             return true;
         } else {
+            return false;
+        }
+    }
+
+    @Transactional
+    public Boolean userDataDelete(String nickname){
+        try{
+            userRepository.deleteBynickname(nickname);
+            return true;
+        } catch (Exception e){
+            System.out.println("Error: " + e);
             return false;
         }
     }

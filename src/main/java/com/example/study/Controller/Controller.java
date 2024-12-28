@@ -37,17 +37,6 @@ public class Controller {
         return "register.html";
     }
 
-    @PostMapping("/register_ok")
-    public String register_ok(@ModelAttribute UserDto userDto){
-        if(service.userDataInsert(userDto)){
-          System.out.println("Register Success");
-          return "redirect:login.html";
-        } else {
-            System.out.println("Register failed");
-            return "redirect:register.html";
-        }
-    }
-
     @GetMapping("/main")
     public String main(Model model, HttpSession session){
         List<ChatRoomEntity> chatRoomEntity = service.chatroom_findAll();
@@ -62,12 +51,24 @@ public class Controller {
         return "main";
     }
 
+    @PostMapping("/register_ok")
+    public String register_ok(@ModelAttribute UserDto userDto, HttpSession session){
+        if(service.userDataInsert(userDto, session)){
+          System.out.println("Register Success");
+            return "redirect:/main";
+        } else {
+            System.out.println("Register failed");
+            return "redirect:register.html";
+        }
+    }
+
+
     @PostMapping("/chatroom_create")
     public String chatroom_create(@ModelAttribute ChatRoomDto chatRoomDto, HttpSession session, Model model){
         chatRoomDto.setWriter((String) session.getAttribute("loginuser"));
         service.ChatRoomInsert(chatRoomDto, session);
         main(model, session);
-        return "main";
+        return "";
     }
 
     @GetMapping("/chatroom_search")
@@ -106,5 +107,15 @@ public class Controller {
         } else {
             return "main";
         }
+    }
+
+    @GetMapping("/DeleteAccount")
+    public String DeleteAccount(HttpSession session){
+        if(service.userDataDelete((String) session.getAttribute("loginuser"))){
+            System.out.println("Delete Success");
+        } else {
+            System.out.println("Delete failed");
+        }
+        return "redirect:login.html";
     }
 }
