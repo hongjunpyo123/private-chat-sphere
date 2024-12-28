@@ -22,6 +22,11 @@ public class Controller {
         return "login.html";
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
+
     @PostMapping("/login_ok")
     public String login_ok(@ModelAttribute UserDto userDto, HttpSession session, Model model){
         if(service.userDataLogin(userDto, session)){

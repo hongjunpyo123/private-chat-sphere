@@ -36,6 +36,8 @@ public class Service {
     private UserEntity userEntity = new UserEntity();
     private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
+    private Long count = 0L; //채팅방 count를 비교하기 위한 변수
+
     public Boolean userDataInsert(UserDto userDto, HttpSession session){ //회원가입
         session.setAttribute("loginuser", userDto.getNickname());//회원가입
         try{
@@ -143,6 +145,23 @@ public class Service {
         } catch (Exception e){
             System.out.println("Error: " + e);
             return false;
+        }
+    }
+
+
+    //rest-api
+    public MessageDto messageFindLast(HttpSession session){
+        Long chatRoomId = (Long) session.getAttribute("chatid");
+        String writer = (String) session.getAttribute("loginuser");
+        Long chatRoomCount = chatRoomRepository.findById(chatRoomId).orElse(null).getCount();
+
+        MessageDto messageDto = messageRepository.findTop1ByOrderByIdDesc().toDto();
+
+        if(chatRoomCount != this.count){
+            this.count = chatRoomCount;
+            return messageDto;
+        } else {
+            return messageDto;
         }
     }
 
