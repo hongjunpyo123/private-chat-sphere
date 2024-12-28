@@ -27,9 +27,12 @@ public class Service {
 
     public Boolean userDataInsert(UserDto userDto){
         try{
-            userRepository.save(userDto.toEntity());
-            userRepository.flush();
-            return true;
+            if(userRepository.findBynickname(userDto.getNickname()).orElse(null) != null){
+                return false;
+            } else {
+                userRepository.save(userDto.toEntity());
+                return true;
+            }
         } catch (DataIntegrityViolationException e){
             System.out.println("Error: " + e);
             return false;
