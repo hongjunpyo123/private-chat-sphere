@@ -8,10 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChatRoomDto {
-    private long id;
+    private Long id;
     private String title;
     private String writer;
     private String password;
+    private Long count;
 
     public ChatRoomEntity toEntity(){
         ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
@@ -19,6 +20,7 @@ public class ChatRoomDto {
         chatRoomEntity.setTitle(this.title);
         chatRoomEntity.setWriter(this.writer);
         chatRoomEntity.setPassword(this.password);
+        chatRoomEntity.setCount(this.count);
         return chatRoomEntity;
     }
 }

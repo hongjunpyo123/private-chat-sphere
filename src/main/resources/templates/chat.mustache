@@ -19,7 +19,6 @@
             min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
-            animation: fadeIn 0.8s ease-out forwards;
             position: relative;
         }
 
@@ -46,11 +45,11 @@
             padding: 16px;
             margin: 60px 0 30px 0;
             overflow-y: auto;
-            position: fixed; /* 추가 */
-            top: 0; /* 추가 */
-            bottom: 80px; /* 추가 - 입력창 높이만큼 여백 */
-            left: 0; /* 추가 */
-            right: 0; /* 추가 */
+            position: fixed;
+            top: 0;
+            bottom: 80px;
+            left: 0;
+            right: 0;
         }
 
         .chat-input-container {
@@ -63,10 +62,9 @@
             border-top: 1px solid #e1e1e1;
             display: flex;
             gap: 8px;
-            z-index: 1000; /* 추가 */
+            z-index: 1000;
         }
 
-        /* 나머지 스타일은 동일하게 유지 */
         .back-button {
             color: white;
             text-decoration: none;
@@ -213,7 +211,6 @@
     </style>
 </head>
 <body>
-<!-- 나머지 HTML 내용은 동일하게 유지 -->
 <header class="chat-header">
     <a href="/main" class="back-button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -225,42 +222,20 @@
 </header>
 
 <div class="chat-container">
-    <div class="date-divider">
-        <span class="date-text">2024년 12월 27일</span>
-    </div>
-
-    <div class="message received">
-        <div class="message-sender">홍길동</div>
-        <div class="message-content">안녕하세요!</div>
-        <div class="message-time">오전 10:23</div>
-    </div>
-
-    <div class="message sent">
-        <div class="message-content">네 안녕하세요~</div>
-        <div class="message-time">오전 10:24</div>
-    </div>
-
-    <div class="message received">
-        <div class="message-sender">홍길동</div>
-        <div class="message-content">오늘 날씨가 좋네요</div>
-        <div class="message-time">오전 10:25</div>
-    </div>
-
-    <div class="message sent">
-        <div class="message-content">네 정말 그렇네요!</div>
-        <div class="message-time">오전 10:25</div>
-    </div>
-
-    <div class="message received">
-        <div class="message-sender">김철수</div>
-        <div class="message-content">저도 참여해도 될까요?</div>
-        <div class="message-time">오전 10:30</div>
-    </div>
-
-    <div class="message sent">
-        <div class="message-content">네 환영합니다~</div>
-        <div class="message-time">오전 10:31</div>
-    </div>
+    {{#chatinfo}}
+        <div class="message received">
+            <div class="message-sender">{{writer}}</div>
+            <div class="message-content">{{message}}</div>
+            <div class="message-time">{{date}}</div>
+        </div>
+    {{/chatinfo}}
+    {{^chatinfo}}
+        <div class="message received">
+            <div class="message-sender"></div>
+            <div class="message-content">메세지가 없습니다</div>
+            <div class="message-time">00:00</div>
+        </div>
+    {{/chatinfo}}
 </div>
 
 <div class="chat-input-container">
@@ -271,8 +246,11 @@
             <path d="M15 8h6v6"/>
         </svg>
     </button>
-    <input type="text" class="chat-input" placeholder="메시지를 입력하세요" autocomplete="off">
-    <button class="send-button">→</button>
+    <form action="/chatMessageSend" method="post" style="display: flex; flex: 1; gap: 8px;">
+        <input type="text" class="chat-input" placeholder="메시지를 입력하세요" autocomplete="off" name="message">
+        <input type="hidden" name="chatRoomId" value="{{chat.id}}">
+        <button type="submit" class="send-button">→</button>
+    </form>
 </div>
 
 <script>

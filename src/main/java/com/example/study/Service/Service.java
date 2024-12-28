@@ -1,10 +1,13 @@
 package com.example.study.Service;
 
 import com.example.study.Dto.ChatRoomDto;
+import com.example.study.Dto.MessageDto;
 import com.example.study.Dto.UserDto;
 import com.example.study.Entity.ChatRoomEntity;
+import com.example.study.Entity.MessageEntity;
 import com.example.study.Entity.UserEntity;
 import com.example.study.Repository.ChatRoomRepository;
+import com.example.study.Repository.MessageRepository;
 import com.example.study.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.StyledEditorKit;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -22,6 +28,9 @@ public class Service {
 
     @Autowired
     private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     private UserEntity userEntity = new UserEntity();
 
@@ -60,6 +69,7 @@ public class Service {
     }
 
     public Boolean ChatRoomInsert(ChatRoomDto chatRoomDto,HttpSession session){
+        chatRoomDto.setCount(0L); //채팅방 생성 시 count는 0으로 초기화
         try{
             chatRoomRepository.save(chatRoomDto.toEntity());
             return true;
@@ -102,6 +112,22 @@ public class Service {
     public Boolean userDataDelete(String nickname){
         try{
             userRepository.deleteBynickname(nickname);
+            return true;
+        } catch (Exception e){
+            System.out.println("Error: " + e);
+            return false;
+        }
+    }
+
+    public List<MessageEntity> chatMessageFindAll(Long id){
+        return messageRepository.findBychatRoomIdOrderByIdAsc(id); //id에 해당하는 채팅방 메시지를 id순으로 정렬하여 반환
+    }
+
+    public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session) {
+        messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))); //현재 시간 저장
+        messageDto.setWriter((String) session.getAttribute("loginuser")); //세션에 저장된 로그인한 유저의 닉네임을 작성자로 저장
+        try{
+            messageRepository.save(messageDto.toEntity());
             return true;
         } catch (Exception e){
             System.out.println("Error: " + e);

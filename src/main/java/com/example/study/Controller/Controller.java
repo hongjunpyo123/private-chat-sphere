@@ -1,6 +1,7 @@
 package com.example.study.Controller;
 
 import com.example.study.Dto.ChatRoomDto;
+import com.example.study.Dto.MessageDto;
 import com.example.study.Dto.UserDto;
 import com.example.study.Entity.ChatRoomEntity;
 import com.example.study.Service.Service;
@@ -99,10 +100,12 @@ public class Controller {
 
     @GetMapping("/chat/{id}")
     public String chat(@PathVariable Long id, Model model, HttpSession session){
+        ChatRoomEntity chatRoomEntity = service.ChatFindById(id);
         session.setAttribute("chatid", id);
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chat", service.ChatFindById(id));
-        if(service.ChatPwEmpty(id)){
+        model.addAttribute("chat", chatRoomEntity);
+        model.addAttribute("chatinfo", service.chatMessageFindAll(id));
+        if(service.ChatPwEmpty(id) || chatRoomEntity.getPassword().equals(session.getAttribute("password"))){
             return "chat";
         } else {
             return "chat_password";
@@ -111,14 +114,15 @@ public class Controller {
 
     @GetMapping("/chat1")
     public String chat1(@RequestParam String password, Model model, HttpSession session){
+        session.setAttribute("password", password);
         Long id = (Long) session.getAttribute("chatid");
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         model.addAttribute("chat", service.ChatFindById(id));
         model.addAttribute("chatroom", service.chatroom_findAll());
         if(service.ChatPwCmp(id, password)){
-            return "chat";
+            return "redirect:/chat/" + session.getAttribute("chatid");
         } else {
-            return "main";
+            return "redirect:/main";
         }
     }
 
@@ -130,5 +134,11 @@ public class Controller {
             System.out.println("Delete failed");
         }
         return "redirect:login.html";
+    }
+
+    @PostMapping("/chatMessageSend")
+    public String chatMessageSend(@ModelAttribute MessageDto messageDto, HttpSession session){
+        service.chatMessageInsert(messageDto, session);
+        return "redirect:/chat/" + messageDto.getChatRoomId();
     }
 }

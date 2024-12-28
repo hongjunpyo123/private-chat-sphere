@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ChatRoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(length = 255)
     private String title;
@@ -23,12 +23,16 @@ public class ChatRoomEntity {
     @Column(length = 255)
     private String password;
 
+    @Column
+    private Long count;
+
     public ChatRoomDto toDto(){
         ChatRoomDto chatRoomDto = new ChatRoomDto();
         chatRoomDto.setId(this.id);
         chatRoomDto.setTitle(this.title);
         chatRoomDto.setWriter(this.writer);
         chatRoomDto.setPassword(this.password);
+        chatRoomDto.setCount(this.count);
         return chatRoomDto;
     }
 }
