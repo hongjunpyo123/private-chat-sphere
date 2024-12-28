@@ -38,37 +38,83 @@
             margin-top: 24px;
         }
 
+        .header .welcome-text {
+            color: #666666;
+            font-size: 15px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .header .brand-text {
+            color: #3182f6;
+            font-size: 23px;
+            font-weight: 600;
+            margin-top: 8px;
+            letter-spacing: -0.5px;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .header .brand-name {
+            color: #1c6feb;
+            font-weight: 700;
+        }
+
         .header h1 {
             font-size: 24px;
             font-weight: bold;
             color: #333333;
+            margin-top: 16px;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            position: relative;
         }
 
         .form-group label {
-            display: block;
+            display: inline-block;
             font-size: 14px;
             font-weight: 500;
-            color: #333333;
+            color: #666666;
             margin-bottom: 8px;
+            padding-left: 4px;
+            letter-spacing: -0.3px;
+            transition: all 0.2s ease;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e1e1e1;
+            padding: 14px 16px;
+            border: 1.5px solid #e1e1e1;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
+            background-color: #f8f9fa;
             transition: all 0.2s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #3182f6;
-            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+        }
+
+        .form-group .input-description {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+            padding-left: 4px;
+        }
+
+        .form-group input::placeholder {
+            color: #aab0b7;
+            font-size: 14px;
         }
 
         .password-wrapper {
@@ -144,30 +190,32 @@
 <body>
 <div class="container">
     <header class="header">
-        <h1>회원가입</h1>
+        <div class="welcome-text">프라이빗한 소통의 시작</div>
+        <div class="brand-text">지금 시작해보세요</div>
     </header>
 
     <form id="signupForm" action="/register_ok" method="post">
         <div class="form-group">
-            <label for="nickname">닉네임</label>
+            <label for="nickname">프로필 닉네임</label>
             <input
                     type="text"
                     id="nickname"
                     name="nickname"
-                    placeholder="닉네임을 입력하세요"
+                    placeholder="사용하실 닉네임을 입력해주세요"
                     required
                     autocomplete="off"
             >
+            <div class="input-description">다른 사용자에게 보여질 이름입니다</div>
         </div>
 
         <div class="form-group">
-            <label for="password">비밀번호</label>
+            <label for="password">계정 비밀번호</label>
             <div class="password-wrapper">
                 <input
                         type="password"
                         id="password"
                         name="password"
-                        placeholder="비밀번호를 입력하세요"
+                        placeholder="안전한 비밀번호를 입력해주세요"
                         required
                 >
                 <button type="button" class="password-toggle" id="passwordToggle">
@@ -177,17 +225,17 @@
         </div>
 
         <div class="form-group">
-            <label for="confirmPassword">비밀번호 확인</label>
+            <label for="confirmPassword">비밀번호 재확인</label>
             <div class="password-wrapper">
                 <input
                         type="password"
                         id="confirmPassword"
                         name="confirmPassword"
-                        placeholder="비밀번호를 다시 입력하세요"
+                        placeholder="비밀번호를 한 번 더 입력해주세요"
                         required
                 >
             </div>
-            <div class="error-message" id="passwordError">비밀번호가 일치하지 않습니다.</div>
+            <div class="error-message" id="passwordError">비밀번호가 일치하지 않습니다</div>
         </div>
 
         <button type="submit" class="signup-button">가입하기</button>
@@ -200,43 +248,42 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const passwordError = document.getElementById('passwordError');
-    let passwordVisible = false;
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordError = document.getElementById('passwordError');
+        let passwordVisible = false;
 
-    // 기존의 비밀번호 보기/숨기기 토글
-    passwordToggle.addEventListener('click', function() {
-        passwordVisible = !passwordVisible;
-        passwordInput.type = passwordVisible ? 'text' : 'password';
-        passwordToggle.textContent = passwordVisible ? '🔒' : '👁';
-    });
+        // 비밀번호 보기/숨기기 토글
+        passwordToggle.addEventListener('click', function() {
+            passwordVisible = !passwordVisible;
+            passwordInput.type = passwordVisible ? 'text' : 'password';
+            passwordToggle.textContent = passwordVisible ? '🔒' : '👁';
+        });
 
-    // 비밀번호 일치 여부 확인 함수
-    function checkPasswords() {
-        if (confirmPasswordInput.value !== '') {  // 비밀번호 확인란이 비어있지 않을 때만 검사
-            if (passwordInput.value === confirmPasswordInput.value) {
-                passwordError.style.display = 'none';  // 일치하면 에러 메시지 숨김
-                return true;
-            } else {
-                passwordError.style.display = 'block';  // 불일치하면 에러 메시지 표시
-                return false;
+        // 비밀번호 일치 여부 확인 함수
+        function checkPasswords() {
+            if (confirmPasswordInput.value !== '') {
+                if (passwordInput.value === confirmPasswordInput.value) {
+                    passwordError.style.display = 'none';
+                    return true;
+                } else {
+                    passwordError.style.display = 'block';
+                    return false;
+                }
             }
         }
-    }
 
-    // 비밀번호 입력할 때마다 확인
-    confirmPasswordInput.addEventListener('input', checkPasswords);
-    passwordInput.addEventListener('input', checkPasswords);
+        // 비밀번호 입력할 때마다 확인
+        confirmPasswordInput.addEventListener('input', checkPasswords);
+        passwordInput.addEventListener('input', checkPasswords);
 
-    // 폼 제출 시 최종 확인
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-        if (!checkPasswords()) {
-            e.preventDefault();  // 비밀번호가 일치하지 않으면 제출 막기
-        }
+        // 폼 제출 시 최종 확인
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            if (!checkPasswords()) {
+                e.preventDefault();
+            }
+        });
     });
-});
-
 </script>
 </body>
 </html>
