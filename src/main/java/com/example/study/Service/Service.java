@@ -69,6 +69,9 @@ public class Service {
     }
 
     public List<ChatRoomEntity> chatroom_find(String search){
+        if(search.isEmpty()){
+            return chatRoomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        }
         return chatRoomRepository.findByTitleContaining(search);
     }
 
