@@ -13,14 +13,14 @@
         }
 
         body {
-            background-color: #f5f6f8;
+            background-color: #f8fafc;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
         .container {
-            padding: 16px;
+            padding: 20px;
             max-width: 480px;
             margin: 0 auto;
             width: 100%;
@@ -30,40 +30,51 @@
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 16px;
-            padding: 16px;
-            background-color: #3182f6;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            margin-bottom: 24px;
+            padding: 24px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #3182f6;
         }
 
         .header .greeting {
-            font-size: 16px;
-            color: #d6e4f5;
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
 
         .header .username {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: -0.5px;
         }
 
         .search-container {
-            margin-bottom: 16px;
+            margin-bottom: 24px;
             position: relative;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 16px;
-            padding-right: 40px;
-            border: 2px solid #e1e1e1;
-            border-radius: 12px;
-            font-size: 16px;
+            padding: 16px 48px 16px 20px;
+            border: 2px solid #eef0f3;
+            border-radius: 16px;
+            font-size: 15px;
             background-color: white;
             transition: all 0.2s ease;
         }
@@ -71,17 +82,17 @@
         .search-input:focus {
             outline: none;
             border-color: #3182f6;
-            box-shadow: 0 2px 4px rgba(49, 130, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.1);
         }
 
         .search-icon {
             position: absolute;
-            right: 12px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat center;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233182f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat center;
             background-size: contain;
             border: none;
             cursor: pointer;
@@ -94,68 +105,96 @@
 
         .post-item {
             background-color: white;
-            margin-bottom: 12px;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .post-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: rgba(49, 130, 246, 0.1);
         }
 
         .post-content {
             display: flex;
             flex-direction: column;
+            gap: 8px;
         }
 
         .post-title {
             font-size: 16px;
-            font-weight: bold;
-            color: #333333;
-            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: -0.3px;
         }
 
         .post-author {
             font-size: 14px;
-            color: #666666;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-author::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: #cbd5e1;
+            border-radius: 50%;
         }
 
         .post-action {
             font-size: 18px;
             color: #3182f6;
-            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background-color: rgba(49, 130, 246, 0.1);
+            transition: all 0.2s ease;
         }
 
-        .post-action:hover {
-            color: #1c6feb;
+        .post-item:hover .post-action {
+            background-color: #3182f6;
+            color: white;
         }
 
         .fab {
             position: fixed;
-            bottom: 80px;
+            bottom: 90px;
             right: 24px;
             width: 56px;
             height: 56px;
             background-color: #3182f6;
-            border-radius: 50%;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(49, 130, 246, 0.25);
             cursor: pointer;
             transition: all 0.2s ease;
             z-index: 1001;
         }
 
-        .fab:active {
-            background-color: #1c6feb;
-            transform: translateY(2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        .fab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(49, 130, 246, 0.3);
         }
 
-        .bottom-nav {
+         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -166,7 +205,6 @@
             justify-content: space-around;
             padding: 8px 0;
             box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
         }
 
         .bottom-nav a {
@@ -189,12 +227,12 @@
         }
 
         .icon-home {
-            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"></path><path d="M9 21V9h6v12"></path></svg>') no-repeat center;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"></path><path d="M9 21V9h6v12"></path></svg>') no-repeat center;
             background-size: contain;
         }
 
         .icon-user {
-            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21h13c-.5-4-2.5-7-6.5-7s-6 3-6.5 7z"></path></svg>') no-repeat center;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21h13c-.5-4-2.5-7-6.5-7s-6 3-6.5 7z"></path></svg>') no-repeat center;
             background-size: contain;
         }
 
@@ -202,13 +240,14 @@
             position: fixed;
             bottom: 150px;
             right: 24px;
-            width: 300px;
+            width: 320px;
             background-color: white;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 999;
+            animation: slideUp 0.3s ease-out forwards;
         }
 
         .post-form.visible {
@@ -217,45 +256,46 @@
 
         .post-form input {
             width: 100%;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            border: 1px solid #e1e1e1;
-            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 2px solid #eef0f3;
+            border-radius: 12px;
             font-size: 14px;
+            transition: all 0.2s ease;
         }
 
         .post-form input:focus {
             outline: none;
             border-color: #3182f6;
+            box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.1);
         }
 
         .post-form button {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             background-color: #3182f6;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .post-form button:hover {
             background-color: #1c6feb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49, 130, 246, 0.2);
         }
 
         .form-title {
             font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
             text-align: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e1e1e1;
-        }
-
-        #chatroom:hover {
-            background-color: #f5f5f5;
+            letter-spacing: -0.5px;
         }
 
         a {
@@ -264,6 +304,17 @@
         }
 
         @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -278,8 +329,8 @@
 <body>
 <div class="container">
     <header class="header">
-        <span class="greeting">안녕하세요,</span>
-        <span class="username">{{loginuser}}님</span>
+        <div class="greeting">안녕하세요,</div>
+        <div class="username">{{loginuser}}님</div>
     </header>
 
     <form action="/chatroom_search" method="get">
@@ -289,42 +340,43 @@
         </div>
     </form>
 
-    {{#chatroom}}
-        <a href="/chat/{{id}}" id="chatroom">
-            <li class="post-item">
-                <div class="post-content">
-                    <div class="post-title">
-                        {{#password}}🔒{{/password}}{{title}}
+    <ul class="post-list">
+        {{#chatroom}}
+            <a href="/chat/{{id}}" id="chatroom">
+                <li class="post-item">
+                    <div class="post-content">
+                        <div class="post-title">
+                            {{#password}}🔒{{/password}}{{title}}
+                        </div>
+                        <div class="post-author">{{writer}}</div>
                     </div>
-                    <div class="post-author">만든이: {{writer}}</div>
-                </div>
-                <div class="post-action">❯</div>
-            </li>
-        </a>
-    {{/chatroom}}
-    {{^chatroom}}
-        <a href="/main" id="chatroom">
-            <li class="post-item">
-                <div class="post-content">
-                    <div class="post-title">채팅방이 존재하지 않습니다.</div>
-                    <div class="post-author"></div>
-                </div>
-                <div class="post-action">⬅</div>
-            </li>
-        </a>
-    {{/chatroom}}
+                    <div class="post-action">❯</div>
+                </li>
+            </a>
+        {{/chatroom}}
+        {{^chatroom}}
+            <a href="/main" id="chatroom">
+                <li class="post-item">
+                    <div class="post-content">
+                        <div class="post-title">채팅방이 존재하지 않습니다</div>
+                        <div class="post-author">새로운 채팅방을 만들어보세요!</div>
+                    </div>
+                    <div class="post-action">⬅</div>
+                </li>
+            </a>
+        {{/chatroom}}
+    </ul>
 </div>
 
-<!-- container 밖으로 이동 -->
 <div class="fab">+</div>
 <form class="post-form" action="/chatroom_create" method="post">
-    <h3 class="form-title">채팅방 생성</h3>
-    <input type="text" name="title" placeholder="주제를 입력하세요(40자 이내)" required>
-    <input type="password" name="password" placeholder="입장 비밀번호(10자 이내)">
-    <button type="submit">작성하기</button>
+    <h3 class="form-title">새로운 채팅방 만들기</h3>
+    <input type="text" name="title" placeholder="주제를 입력하세요 (40자 이내)" maxlength="40" required>
+    <input type="password" name="password" placeholder="입장 비밀번호 (10자 이내)" maxlength="10">
+    <button type="submit">채팅방 만들기</button>
 </form>
 
-<div class="bottom-nav">
+<nav class="bottom-nav">
     <a href="/main">
         <span class="icon icon-home"></span>
         홈
@@ -333,17 +385,24 @@
         <span class="icon icon-user"></span>
         마이페이지
     </a>
-</div>
+</nav>
 
 <script>
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
         history.go(1);
     };
+
     document.querySelector('.fab').addEventListener('click', function() {
         const form = document.querySelector('.post-form');
         form.classList.toggle('visible');
     });
+
+    // 채팅방이 없을 때의 메시지에 애니메이션 추가
+    const noChatMessage = document.querySelector('.post-list');
+    if (noChatMessage) {
+        noChatMessage.style.animation = 'fadeIn 0.8s ease-out forwards';
+    }
 </script>
 </body>
 </html>
