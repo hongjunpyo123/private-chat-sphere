@@ -4,6 +4,7 @@ import com.example.study.Dto.ChatRoomDto;
 import com.example.study.Dto.MessageDto;
 import com.example.study.Dto.UserDto;
 import com.example.study.Entity.ChatRoomEntity;
+import com.example.study.Entity.MessageEntity;
 import com.example.study.Service.Service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -106,9 +108,26 @@ public class Controller {
     @GetMapping("/chat/{id}")
     public String chat(@PathVariable Long id, Model model, HttpSession session){
         ChatRoomEntity chatRoomEntity = service.ChatFindById(id, session);
-        model.addAttribute("loginuser", session.getAttribute("loginuser"));
+        List<MessageEntity> messageEntityList = service.chatMessageFindAll(id);
+        String loginuser = (String) session.getAttribute("loginuser");
+
+        //-----------------채팅방 입장시 메시지 타입 구분 로직-----------------
+        List<MessageDto> messageDtoList = messageEntityList.stream()
+                        .map(entity -> {
+                            MessageDto messageDto = entity.toDto();
+                            if(messageDto.getWriter().equals(loginuser)){
+                                messageDto.setMessageType("sent");
+                            } else {
+                                messageDto.setMessageType("received");
+                            }
+                            return messageDto;
+                        })
+                        .collect(Collectors.toList());
+        //-------------------------------------------------------------------
+
+        model.addAttribute("loginuser", loginuser);
         model.addAttribute("chat", chatRoomEntity);
-        model.addAttribute("chatinfo", service.chatMessageFindAll(id));
+        model.addAttribute("chatinfo", messageDtoList);
         if(service.ChatPwEmpty(id) || chatRoomEntity.getPassword().equals(session.getAttribute("password"))){
             return "chat";
         } else {
@@ -120,9 +139,11 @@ public class Controller {
     public String chat1(@RequestParam String password, Model model, HttpSession session){
         session.setAttribute("password", password);
         Long id = (Long) session.getAttribute("chatid");
+        ChatRoomEntity chatRoomEntity = service.ChatFindById(id, session);
+
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
-        model.addAttribute("chat", service.ChatFindById(id, session));
-        model.addAttribute("chatroom", service.chatroom_findAll(session));
+        model.addAttribute("chat", chatRoomEntity);
+        model.addAttribute("chatroom", chatRoomEntity);
         if(service.ChatPwCmp(id, password)){
             return "redirect:/chat/" + session.getAttribute("chatid");
         } else {

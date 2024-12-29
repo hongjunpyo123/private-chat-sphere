@@ -144,6 +144,11 @@ public class Service {
     }
 
     public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session) {
+        //메세지가 없을 때 예외처리
+        if(messageDto.getMessage().isEmpty()){
+            return false;
+        }
+
 
         //채팅방을 찾고 count를 1 증가시킨 후 저장
         chatRoomEntity = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
@@ -173,6 +178,11 @@ public class Service {
         Long chatRoomCount = chatRoomRepository.findById(chatRoomId).orElse(null).getCount();
 
         MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
+        if(messageDto.getWriter().equals(writer)){
+            messageDto.setMessageType("sent");
+        } else {
+            messageDto.setMessageType("received");
+        }
 
         if(chatRoomCount != count){
             session.setAttribute("count", count+1);

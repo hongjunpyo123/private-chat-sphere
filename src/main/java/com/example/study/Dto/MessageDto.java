@@ -12,6 +12,7 @@ public class MessageDto {
     private String writer;
     private String message;
     private String Date;
+    private String messageType;  // DB에 영향을 주지 않는 필드
 
     public MessageEntity toEntity(){
         MessageEntity messageEntity = new MessageEntity();

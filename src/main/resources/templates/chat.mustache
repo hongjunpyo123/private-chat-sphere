@@ -223,7 +223,7 @@
 
 <div class="chat-container">
     {{#chatinfo}}
-        <div class="message received">
+        <div class="message {{messageType}}">
             <div class="message-sender">{{writer}}</div>
             <div class="message-content">{{message}}</div>
             <div class="message-time">{{date}}</div>
@@ -263,7 +263,7 @@ function updateChat() {
         .then(msg => {
             if (msg !== null) {  // msg가 null이 아닐 때만 실행
                 chatContainer.insertAdjacentHTML('beforeend', `
-                    <div class="message received">
+                    <div class="message ${msg.messageType}}">
                         <div class="message-sender">${msg.writer}</div>
                         <div class="message-content">${msg.message}</div>
                         <div class="message-time">${msg.date}</div>
@@ -274,7 +274,7 @@ function updateChat() {
         });
 }
 
-setInterval(updateChat, 1000);
+setInterval(updateChat, 500);
 
 
 
