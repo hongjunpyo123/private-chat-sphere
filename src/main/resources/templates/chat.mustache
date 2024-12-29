@@ -286,6 +286,8 @@ window.onpopstate = function () {
 // 페이지 로딩 시 스크롤 맨 아래로
 document.addEventListener('DOMContentLoaded', () => {
     const chatContainer = document.querySelector('.chat-container');
+
+    document.querySelector('.chat-input').focus();
     if (chatContainer) {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
