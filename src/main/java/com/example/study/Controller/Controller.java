@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
@@ -165,5 +166,28 @@ public class Controller {
     public String chatMessageSend(@ModelAttribute MessageDto messageDto, HttpSession session){
         service.chatMessageInsert(messageDto, session);
         return "redirect:/chat/" + messageDto.getChatRoomId();
+    }
+
+    @GetMapping("/guestLogin")
+    public String guestLogin(HttpSession session){
+        Random random = new Random();
+        int randomNumber = random.nextInt(9000) + 1000;
+        String guestNickname = "Guest" + Integer.toString(randomNumber);
+        session.setAttribute("loginuser", guestNickname);
+        return "redirect:/main";
+    }
+
+    @GetMapping("/guestChat/{id}/{password}")
+    public String guestChat(@PathVariable Long id, @PathVariable String password ,HttpSession session){
+        Random random = new Random();
+        int randomNumber = random.nextInt(9000) + 1000;
+        String guestNickname = "Guest" + Integer.toString(randomNumber);
+        session.setAttribute("loginuser", guestNickname);
+        session.setAttribute("password", password);
+        return "redirect:/chat/" + id;
+    }
+    @GetMapping("/guestChat/{id}/")
+    public String guestChat(@PathVariable Long id){
+        return "redirect:/guestChat/" + id + "/0";
     }
 }
