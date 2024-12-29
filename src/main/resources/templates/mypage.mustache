@@ -169,12 +169,14 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: white;
-            border-top: 1px solid #e1e1e1;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(49, 130, 246, 0.1);
             display: flex;
             justify-content: space-around;
             padding: 8px 0;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03);
         }
 
         .bottom-nav a {
@@ -197,15 +199,24 @@
         }
 
         .icon-home {
-            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"></path><path d="M9 21V9h6v12"></path></svg>') no-repeat center;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>') no-repeat center;
             background-size: contain;
         }
 
         .icon-user {
-            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"></circle><path d="M5.5 21h13c-.5-4-2.5-7-6.5-7s-6 3-6.5 7z"></path></svg>') no-repeat center;
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center;
             background-size: contain;
         }
 
+        .bottom-nav a:hover .icon-home {
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233182f6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .bottom-nav a:hover .icon-user {
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233182f6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>') no-repeat center;
+            background-size: contain;
+        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -245,7 +256,7 @@
             <form action="/" method="get">
                 <button type="submit" class="button button-primary">로그아웃</button>
             </form>
-            <form action="/DeleteAccount" method="get" onsubmit="return confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+            <form action="/DeleteAccount" method="get" onsubmit="return confirm('정말 탈퇴하시겠습니까?');">
                 <button type="submit" class="button button-danger">계정 삭제</button>
             </form>
         </div>
@@ -255,11 +266,11 @@
 <nav class="bottom-nav">
     <a href="/main">
         <span class="icon icon-home"></span>
-        홈
+        <span class="nav-text"></span>
     </a>
     <a href="/mypage">
         <span class="icon icon-user"></span>
-        마이페이지
+        <span class="nav-text"></span>
     </a>
 </nav>
 
