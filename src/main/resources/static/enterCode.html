@@ -165,6 +165,10 @@
       const resetButton = document.getElementById('resetButton');
       const codeField = document.getElementById('codeField');
 
+      window.onload = function() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
       // 입력 필드 자동 포커스 이동
       inputs.forEach((input, index) => {
           input.addEventListener('input', function(e) {

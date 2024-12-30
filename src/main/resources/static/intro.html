@@ -135,6 +135,10 @@
 </div>
 
 <script>
+    window.onload = function() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
     // 뒤로가기 방지
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
