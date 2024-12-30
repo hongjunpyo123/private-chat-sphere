@@ -431,7 +431,27 @@
             object-fit: contain;
         }
 
+        .nickname-input {
+            transition: all 0.2s ease;
+        }
 
+        .nickname-input:focus {
+            border-color: #3182f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+        }
+
+        .nickname-submit:hover {
+            background: #2563eb;
+        }
+
+        .nickname-submit:active {
+            transform: translateY(1px);
+        }
+
+        .nickname-input-container {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
 
     </style>
 
@@ -469,6 +489,20 @@
                 메시지 암호화
                 <div class="toggle-switch"></div>
             </div>
+
+            <div class="dropdown-item nickname-change">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                닉네임 변경
+            </div>
+            <div class="nickname-input-container" style="display: none; padding: 8px 16px;">
+                <input type="text" class="nickname-input" placeholder="새 닉네임" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px;">
+                <button class="nickname-submit" style="width: 100%; padding: 8px; background: #3182f6; color: white; border: none; border-radius: 8px; cursor: pointer;">변경하기</button>
+            </div>
+
+
         </div>
     </div>
 </header>
@@ -521,6 +555,34 @@
     const dropdownContent = document.querySelector('.dropdown-content');
     const toggleSwitch = document.querySelector('.toggle-switch');
     const baseUrl = window.location.protocol + '//' + window.location.host;
+
+    const nicknameChange = document.querySelector('.nickname-change');
+    const nicknameInputContainer = document.querySelector('.nickname-input-container');
+    const nicknameInput = document.querySelector('.nickname-input');
+    const nicknameSubmit = document.querySelector('.nickname-submit');
+
+
+    nicknameChange.addEventListener('click', () => {
+        nicknameInputContainer.style.display = nicknameInputContainer.style.display === 'none' ? 'block' : 'none';
+    });
+    nicknameSubmit.addEventListener('click', () => {
+    const newNickname = nicknameInput.value.trim();
+        if(newNickname) {
+            fetch(`/sessonNicknameChange/${newNickname}`)
+                .then(() => {
+                    alert('닉네임이 변경되었습니다.');
+                    nicknameInputContainer.style.display = 'none';
+                    nicknameInput.value = '';
+                    dropdownContent.classList.remove('show');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('닉네임 변경에 실패했습니다.');
+                });
+        } else {
+            alert('닉네임을 입력해주세요.');
+        }
+    });
 
 
     chatContainer.addEventListener('click', (e) => {

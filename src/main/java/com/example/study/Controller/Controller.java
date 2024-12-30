@@ -222,7 +222,7 @@ public class Controller {
     public String guestChat(@PathVariable Long id, @PathVariable String password ,HttpSession session){
         Random random = new Random();
         int randomNumber = random.nextInt(9000) + 1000;
-        String guestNickname = "Guest" + Integer.toString(randomNumber);
+        String guestNickname = "Guest" + Integer.toString(randomNumber); //게스트 닉네임 정하기
         session.setAttribute("loginuser", guestNickname);
         session.setAttribute("password", password);
         session.setAttribute("enterCode", "false");

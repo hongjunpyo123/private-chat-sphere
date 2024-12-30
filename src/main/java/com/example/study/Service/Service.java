@@ -225,4 +225,8 @@ public class Service {
             return false;
         }
     }
+
+    public void sessonNicknameChange(String loginuser, HttpSession session){
+        session.setAttribute("loginuser", loginuser);
+    }
 }
