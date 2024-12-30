@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Code - privateChat</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f8f9ff 0%, #f1f4ff 100%);
+    }
+
+    .container {
+        width: 100%;
+        max-width: 400px;
+        padding: 40px 24px;
+        text-align: center;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .header {
+        margin-bottom: 40px;
+    }
+
+    .title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #111111;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+        color: #666666;
+        line-height: 1.5;
+    }
+
+    .code-input-container {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 32px;
+        margin-bottom: 32px;
+    }
+
+    .code-input {
+        width: 50px;
+        height: 60px;
+        border: 2px solid #e1e1e1;
+        border-radius: 12px;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        background: transparent;
+        transition: all 0.2s ease;
+        outline: none;
+        color: #111111;
+    }
+
+    .code-input:focus {
+        border-color: #3182f6;
+        box-shadow: 0 0 0 4px rgba(49, 130, 246, 0.1);
+    }
+
+    .code-input:not(:placeholder-shown) {
+        border-color: #3182f6;
+    }
+
+    #codeField {
+        display: none;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 16px;
+        background-color: #3182f6;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        opacity: 0.5;
+        margin-bottom: 16px;
+    }
+
+    .submit-button.active {
+        opacity: 1;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(49, 130, 246, 0.2);
+    }
+
+    .submit-button.active:hover {
+        background-color: #1c6feb;
+    }
+
+    .reset-button {
+        background: none;
+        border: none;
+        color: #666666;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .reset-button:hover {
+        background-color: #f5f5f5;
+        color: #111111;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1 class="title">코드를 입력하세요</h1>
+    <p class="subtitle">서비스 이용을 위하여<br/>발급된 6자리 코드를 입력해주세요</p>
+  </div>
+
+  <form id="codeForm" action="/enterCode" method="post">
+    <div class="code-input-container">
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+      <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" required>
+    </div>
+
+    <input type="hidden" id="codeField" name="code">
+    <button type="submit" class="submit-button" id="submitButton">입장하기</button>
+    <button type="button" class="reset-button" id="resetButton">초기화</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('codeForm');
+      const inputs = document.querySelectorAll('.code-input');
+      const submitButton = document.getElementById('submitButton');
+      const resetButton = document.getElementById('resetButton');
+      const codeField = document.getElementById('codeField');
+
+      // 입력 필드 자동 포커스 이동
+      inputs.forEach((input, index) => {
+          input.addEventListener('input', function(e) {
+              if (e.inputType === "deleteContentBackward") {
+                  if (index > 0) {
+                      inputs[index - 1].focus();
+                  }
+                  return;
+              }
+
+              if (this.value.length === this.maxLength) {
+                  if (index < inputs.length - 1) {
+                      inputs[index + 1].focus();
+                  }
+              }
+
+              updateSubmitButton();
+          });
+
+          // 백스페이스 키 처리
+          input.addEventListener('keydown', function(e) {
+              if (e.key === 'Backspace' && !this.value) {
+                  e.preventDefault();
+                  if (index > 0) {
+                      inputs[index - 1].focus();
+                      inputs[index - 1].value = '';
+                  }
+              }
+          });
+      });
+
+      // Submit 버튼 상태 업데이트
+      function updateSubmitButton() {
+          const isComplete = Array.from(inputs).every(input => input.value.length === 1);
+          if (isComplete) {
+              submitButton.classList.add('active');
+          } else {
+              submitButton.classList.remove('active');
+          }
+      }
+
+      // 초기화 버튼
+      resetButton.addEventListener('click', function() {
+          inputs.forEach(input => {
+              input.value = '';
+          });
+          inputs[0].focus();
+          submitButton.classList.remove('active');
+      });
+
+      // 폼 제출
+      form.addEventListener('submit', function(e) {
+          const code = Array.from(inputs).map(input => input.value).join('');
+          codeField.value = code;
+      });
+
+      // 페이지 로드 시 첫 번째 입력 필드에 포커스
+      inputs[0].focus();
+  });
+
+  // 뒤로가기 방지
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      history.go(1);
+  };
+</script>
+</body>
+</html>

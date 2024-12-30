@@ -23,7 +23,7 @@ public class Controller {
 
     @GetMapping("/")
     public String login(){
-        return "login.html";
+        return "intro.html";
     }
 
     @GetMapping("/test")
@@ -49,6 +49,15 @@ public class Controller {
 
     @GetMapping("/main")
     public String main(Model model, HttpSession session){
+        //enterCode 검증 로직
+        try {
+            if(session.getAttribute("enterCode").equals("false") || session.getAttribute("enterCode") == null){
+                return "redirect:/enterCode.html";
+            }
+        } catch (Exception e) { //seesion에 enterCode가 없을 경우
+            return "redirect:/enterCode.html";
+        }
+        //------------------
         List<ChatRoomEntity> chatRoomEntity = service.chatroom_findAll(session);
         for (ChatRoomEntity chatRoom : chatRoomEntity) {
             if(chatRoom.getPassword().isEmpty()){
@@ -63,6 +72,17 @@ public class Controller {
 
     @PostMapping("/register_ok")
     public String register_ok(@ModelAttribute UserDto userDto, HttpSession session){
+
+        //enterCode 검증 로직
+        try {
+            if(session.getAttribute("enterCode").equals("false") || session.getAttribute("enterCode") == null){
+                return "redirect:/enterCode.html";
+            }
+        } catch (Exception e) { //seesion에 enterCode가 없을 경우
+            return "redirect:/enterCode.html";
+        }
+        //------------------
+
         if(service.userDataInsert(userDto, session)){
           System.out.println("Register Success");
             return "redirect:/main";
@@ -84,6 +104,20 @@ public class Controller {
         //-------------------------------
 
         return "redirect:/main";
+    }
+
+    @PostMapping("/enterCode")
+    public String enterCode(@RequestParam String code, HttpSession session){
+        String enterCode1 = "741345";
+        String enterCode2 = "384729";
+        String enterCode3 = "696969";
+        if(code.equals(enterCode1) || code.equals(enterCode2) || code.equals(enterCode3)){
+            session.setAttribute("enterCode", "true");
+            return "redirect:/login.html";
+        } else {
+            session.setAttribute("enterCode", "false");
+            return "redirect:/intro.html";
+        }
     }
 
     @GetMapping("/chatroom_search")
@@ -191,6 +225,7 @@ public class Controller {
         String guestNickname = "Guest" + Integer.toString(randomNumber);
         session.setAttribute("loginuser", guestNickname);
         session.setAttribute("password", password);
+        session.setAttribute("enterCode", "false");
         return "redirect:/chat/" + id;
     }
     @GetMapping("/guestChat/{id}/")
