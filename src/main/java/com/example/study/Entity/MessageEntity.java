@@ -27,6 +27,9 @@ public class MessageEntity {
     @Column(length = 255)
     private String Date;
 
+    @Column(length = 255)
+    private String filePath;
+
     public MessageDto toDto(){
         MessageDto messageDto = new MessageDto();
         messageDto.setId(this.id);
@@ -34,6 +37,7 @@ public class MessageEntity {
         messageDto.setWriter(this.writer);
         messageDto.setMessage(this.message);
         messageDto.setDate(this.Date);
+        messageDto.setFilePath(this.filePath);
         return messageDto;
     }
 

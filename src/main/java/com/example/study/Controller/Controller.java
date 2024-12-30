@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Random;
@@ -163,7 +164,13 @@ public class Controller {
     }
 
     @PostMapping("/chatMessageSend")
-    public String chatMessageSend(@ModelAttribute MessageDto messageDto, HttpSession session){
+    public String chatMessageSend(@ModelAttribute MessageDto messageDto,
+                                  @RequestParam(value = "image", required = false) MultipartFile file,
+                                  HttpSession session){
+        if(!file.isEmpty()){ //file이 존재할 경우
+            service.FileUpload(file, session, messageDto);
+            return "redirect:/chat/" + messageDto.getChatRoomId();
+        }
         service.chatMessageInsert(messageDto, session);
         return "redirect:/chat/" + messageDto.getChatRoomId();
     }

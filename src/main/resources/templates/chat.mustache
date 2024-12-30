@@ -393,6 +393,25 @@
         .toggle-switch.active::before {
             transform: translateX(16px);
         }
+
+        .message-content img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .message-content img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+
+
     </style>
 
 </head>
@@ -436,30 +455,35 @@
 
 <div class="chat-container">
     {{#chatinfo}}
-        <div class="message {{messageType}}">
-            <div class="message-sender">{{writer}}</div>
-            <div class="message-content">{{message}}</div>
-            <div class="message-time">{{date}}</div>
-        </div>
-    {{/chatinfo}}
-    {{^chatinfo}}
-        <div class="message received">
-            <div class="message-sender">System</div>
-            <div class="message-content">대화를 시작해보세요 👋</div>
-            <div class="message-time">지금</div>
-        </div>
+        {{#filePath}}
+            <div class="message {{messageType}}">
+                <div class="message-sender">{{writer}}</div>
+                <div class="message-content">
+                    <img src="{{filePath}}" alt="uploaded image">
+                </div>
+                <div class="message-time">{{date}}</div>
+            </div>
+        {{/filePath}}
+        {{^filePath}}
+            <div class="message {{messageType}}">
+                <div class="message-sender">{{writer}}</div>
+                <div class="message-content">{{message}}</div>
+                <div class="message-time">{{date}}</div>
+            </div>
+        {{/filePath}}
     {{/chatinfo}}
 </div>
 
 <div class="chat-input-container">
-    <button class="attach-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/>
-            <path d="M9 11V9a2 2 0 0 1 2-2h2m4.5-4L19 4.5"/>
-            <path d="M15 8h6v6"/>
-        </svg>
-    </button>
-    <form action="/chatMessageSend" method="post" style="display: flex; flex: 1; gap: 12px;">
+    <form action="/chatMessageSend" method="post" style="display: flex; flex: 1; gap: 12px;" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;">
+        <label for="fileInput" class="attach-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/>
+                <path d="M9 11V9a2 2 0 0 1 2-2h2m4.5-4L19 4.5"/>
+                <path d="M15 8h6v6"/>
+            </svg>
+        </label>
         <input type="text" class="chat-input" placeholder="메시지를 입력하세요" autocomplete="off" name="message">
         <input type="hidden" name="chatRoomId" value="{{chat.id}}">
         <button type="submit" class="send-button">
@@ -481,6 +505,13 @@
         e.stopPropagation();
         dropdownContent.classList.toggle('show');
     });
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.querySelector('.chat-input').value = fileName;
+            }
+        });
 
     document.addEventListener('click', (e) => {
         if (!dropdownContent.contains(e.target) && !dropdownButton.contains(e.target)) {

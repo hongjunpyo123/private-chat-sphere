@@ -12,12 +12,16 @@ import com.example.study.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.StyledEditorKit;
+import java.io.File;
 import java.lang.management.LockInfo;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +38,9 @@ public class Service {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     private UserEntity userEntity = new UserEntity();
     private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
@@ -189,6 +196,24 @@ public class Service {
             return messageDto;
         } else {
             return null;
+        }
+    }
+
+    public Boolean FileUpload(MultipartFile file, HttpSession session, MessageDto messageDto){
+        String fileName = file.getOriginalFilename();
+        Resource resource = resourceLoader.getResource("classpath:static/images");
+        try {
+            String uploadDir = resource.getFile().getAbsolutePath();
+            file.transferTo(new File(uploadDir + File.separator + fileName));
+            messageDto.setFilePath("/images/" + fileName);
+            messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+            messageDto.setWriter((String) session.getAttribute("loginuser"));
+            messageDto.setMessage(session.getAttribute("loginuser") + "님이 이미지를 전송하였습니다.");
+            messageRepository.save(messageDto.toEntity());
+            return true;
+        } catch (Exception e){
+            System.out.println("Error: " + e);
+            return false;
         }
     }
 

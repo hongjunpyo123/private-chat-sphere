@@ -12,6 +12,7 @@ public class MessageDto {
     private String writer;
     private String message;
     private String Date;
+    private String filePath;
     private String messageType;  // DB에 영향을 주지 않는 필드
 
     public MessageEntity toEntity(){
@@ -21,6 +22,7 @@ public class MessageDto {
         messageEntity.setWriter(this.writer);
         messageEntity.setMessage(this.message);
         messageEntity.setDate(this.Date);
+        messageEntity.setFilePath(this.filePath);
         return messageEntity;
     }
 }
