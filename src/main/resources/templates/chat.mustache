@@ -588,14 +588,28 @@
             .then(response => response.json())
             .then(msg => {
                 if (msg !== null) {
-                    chatContainer.insertAdjacentHTML('beforeend', `
+                    if (msg.filePath) {
+                        chatContainer.insertAdjacentHTML('beforeend', `
+                        <div class="message ${msg.messageType}">
+                        <div class="message-sender">${msg.writer}</div>
+                        <div class="message-content">
+                            <img src="${msg.filePath}" alt="uploaded image">
+                        </div>
+                            <div class="message-time">${msg.date}</div>
+                        </div>
+                        `);
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    } else {
+                        chatContainer.insertAdjacentHTML('beforeend', `
                         <div class="message ${msg.messageType}">
                             <div class="message-sender">${msg.writer}</div>
                             <div class="message-content">${msg.message}</div>
                             <div class="message-time">${msg.date}</div>
                         </div>
                     `);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }
+
                 }
             });
     }

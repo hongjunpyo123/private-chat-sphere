@@ -203,6 +203,15 @@ public class Service {
         String fileName = file.getOriginalFilename();
         Resource resource = resourceLoader.getResource("classpath:static/images");
         try {
+            //채팅방을 찾고 count를 1 증가시킨 후 저장
+            chatRoomEntity = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
+            Long count = chatRoomEntity.getCount() + 1;
+            chatRoomEntity.setCount(count);
+            chatRoomRepository.save(chatRoomEntity);
+            //----------------------------------------------
+
+
+
             String uploadDir = resource.getFile().getAbsolutePath();
             file.transferTo(new File(uploadDir + File.separator + fileName));
             messageDto.setFilePath("/images/" + fileName);
