@@ -98,6 +98,8 @@ public class Service {
             messageEntity.setMessage(utility.encrypt("채팅방이 생성되었습니다.", encryptKey));
             messageEntity.setWriter("System");
             messageRepository.save(messageEntity);
+            session.setAttribute("chatid", chatRoomEntity.getId());
+            session.setAttribute("password", chatRoomEntity.getPassword());
 
             return true;
         } catch (Exception e){

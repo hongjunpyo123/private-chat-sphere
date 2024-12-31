@@ -103,7 +103,7 @@ public class Controller {
         }
         //-------------------------------
 
-        return "redirect:/main";
+        return "redirect:/chat/" + session.getAttribute("chatid");
     }
 
     @PostMapping("/enterCode")
