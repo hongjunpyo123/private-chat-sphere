@@ -48,7 +48,6 @@ public class Service {
     @Autowired
     private Utility utility;
 
-    private String encryptKey = "jK9#mN2$pL5@Qx8&";
     private UserEntity userEntity = new UserEntity();
     private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
@@ -95,7 +94,7 @@ public class Service {
             chatRoomEntity = chatRoomRepository.save(chatRoomDto.toEntity());
             messageEntity.setDate("00:00");
             messageEntity.setChatRoomId(chatRoomEntity.getId());
-            messageEntity.setMessage(utility.encrypt("채팅방이 생성되었습니다.", encryptKey));
+            messageEntity.setMessage(utility.encrypt("채팅방이 생성되었습니다.", utility.getEncryptKey()));
             messageEntity.setWriter("System");
             messageRepository.save(messageEntity);
             session.setAttribute("chatid", chatRoomEntity.getId());
@@ -160,7 +159,10 @@ public class Service {
         Collections.reverse(messageEntityList);//역순으로 정렬
         messageEntityList.forEach(messageEntity -> {
             //메세지 복호화
-            messageEntity.setMessage(utility.decrypt(messageEntity.getMessage(), encryptKey));
+            messageEntity.setMessage(utility.decrypt(messageEntity.getMessage(), utility.getEncryptKey()));
+            try{ //파일이 존재할 경우 복호화
+                messageEntity.setFilePath(utility.decrypt(messageEntity.getFilePath(), utility.getEncryptKey()));
+            } catch (Exception e){ }
         });
         return messageEntityList;
     }
@@ -183,7 +185,7 @@ public class Service {
         messageDto.setWriter((String) session.getAttribute("loginuser")); //세션에 저장된 로그인한 유저의 닉네임을 작성자로 저장
 
         //메세지 암호화
-        String encryptString = utility.encrypt(messageDto.getMessage(), encryptKey);
+        String encryptString = utility.encrypt(messageDto.getMessage(), utility.getEncryptKey());
         messageDto.setMessage(encryptString);
 
         try{
@@ -206,7 +208,10 @@ public class Service {
         MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
 
         //메세지 복호화
-        messageDto.setMessage(utility.decrypt(messageDto.getMessage(), encryptKey));
+        messageDto.setMessage(utility.decrypt(messageDto.getMessage(), utility.getEncryptKey()));
+        try{ //파일이 존재할 경우 복호화
+            messageDto.setFilePath(utility.decrypt(messageDto.getFilePath(), utility.getEncryptKey()));
+        } catch (Exception e){ }
 
         if(messageDto.getWriter().equals(writer)){
             messageDto.setMessageType("sent");
@@ -236,12 +241,13 @@ public class Service {
 
 
             String uploadDir = resource.getFile().getAbsolutePath();
+            String filePath = "/images/" + fileName;
             file.transferTo(new File(uploadDir + File.separator + fileName));
-            messageDto.setFilePath("/images/" + fileName);
+            messageDto.setFilePath(utility.encrypt(filePath, utility.getEncryptKey())); //file url 암호화
             messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
             messageDto.setWriter((String) session.getAttribute("loginuser"));
             messageDto.setMessage(utility.encrypt(session.getAttribute("loginuser") +
-                    "님이 이미지를 전송하였습니다.", encryptKey));
+                    "님이 이미지를 전송하였습니다.", utility.getEncryptKey()));
 
             messageRepository.save(messageDto.toEntity());
             return true;
