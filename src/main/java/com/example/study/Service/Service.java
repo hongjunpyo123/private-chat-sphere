@@ -9,6 +9,7 @@ import com.example.study.Entity.UserEntity;
 import com.example.study.Repository.ChatRoomRepository;
 import com.example.study.Repository.MessageRepository;
 import com.example.study.Repository.UserRepository;
+import com.example.study.Utility.Utility;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.StyledEditorKit;
+import javax.swing.text.Utilities;
 import java.io.File;
 import java.lang.management.LockInfo;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Setter
@@ -42,6 +45,10 @@ public class Service {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    @Autowired
+    private Utility utility;
+
+    private String encryptKey = "jK9#mN2$pL5@Qx8&";
     private UserEntity userEntity = new UserEntity();
     private ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
 
@@ -88,7 +95,7 @@ public class Service {
             chatRoomEntity = chatRoomRepository.save(chatRoomDto.toEntity());
             messageEntity.setDate("00:00");
             messageEntity.setChatRoomId(chatRoomEntity.getId());
-            messageEntity.setMessage("채팅방이 생성되었습니다.");
+            messageEntity.setMessage(utility.encrypt("채팅방이 생성되었습니다.", encryptKey));
             messageEntity.setWriter("System");
             messageRepository.save(messageEntity);
 
@@ -147,7 +154,13 @@ public class Service {
     }
 
     public List<MessageEntity> chatMessageFindAll(Long id){
-        return messageRepository.findBychatRoomIdOrderByIdAsc(id); //id에 해당하는 채팅방 메시지를 id순으로 정렬하여 반환
+        List<MessageEntity> messageEntityList = messageRepository.findTop20ByChatRoomIdOrderByIdDesc(id);//id에 해당하는 채팅방 메시지를 id순으로 20개 정렬하여 반환
+        Collections.reverse(messageEntityList);//역순으로 정렬
+        messageEntityList.forEach(messageEntity -> {
+            //메세지 복호화
+            messageEntity.setMessage(utility.decrypt(messageEntity.getMessage(), encryptKey));
+        });
+        return messageEntityList;
     }
 
     public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session) {
@@ -167,6 +180,10 @@ public class Service {
         messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))); //현재 시간 저장
         messageDto.setWriter((String) session.getAttribute("loginuser")); //세션에 저장된 로그인한 유저의 닉네임을 작성자로 저장
 
+        //메세지 암호화
+        String encryptString = utility.encrypt(messageDto.getMessage(), encryptKey);
+        messageDto.setMessage(encryptString);
+
         try{
             messageRepository.save(messageDto.toEntity());
             return true;
@@ -185,6 +202,10 @@ public class Service {
         Long chatRoomCount = chatRoomRepository.findById(chatRoomId).orElse(null).getCount();
 
         MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
+
+        //메세지 복호화
+        messageDto.setMessage(utility.decrypt(messageDto.getMessage(), encryptKey));
+
         if(messageDto.getWriter().equals(writer)){
             messageDto.setMessageType("sent");
         } else {
@@ -217,7 +238,9 @@ public class Service {
             messageDto.setFilePath("/images/" + fileName);
             messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
             messageDto.setWriter((String) session.getAttribute("loginuser"));
-            messageDto.setMessage(session.getAttribute("loginuser") + "님이 이미지를 전송하였습니다.");
+            messageDto.setMessage(utility.encrypt(session.getAttribute("loginuser") +
+                    "님이 이미지를 전송하였습니다.", encryptKey));
+
             messageRepository.save(messageDto.toEntity());
             return true;
         } catch (Exception e){
