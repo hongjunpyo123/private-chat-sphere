@@ -10,10 +10,16 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -86,6 +92,7 @@ public class Utility {
     public void lotateEncryptKey() {
         this.encryptKey = CreateEncryptKey();
         this.reChatEncrypt(); //3시간마다 메세지 재 암호화 후 저장
+        this.deleteAllImages(); //3시간마다 이미지 삭제
     }
 
     public void reChatEncrypt() {
@@ -134,6 +141,42 @@ public class Utility {
         }
 
         return new String(keyChars);
+    }
+
+    public void deleteAllImages() {
+        try {
+            Path directory = Paths.get("build/resources/main/static/images");
+
+            if (!Files.exists(directory)) {
+                System.out.println("지정된 디렉토리가 존재하지 않습니다: " + directory);
+                return;
+            }
+
+            // 파일 목록 먼저 수집
+            List<File> filesToDelete = Files.walk(directory)
+                    .filter(Files::isRegularFile)
+                    .filter(path -> {
+                        String fileName = path.toString().toLowerCase();
+                        return fileName.endsWith(".jpg") ||
+                                fileName.endsWith(".jpeg") ||
+                                fileName.endsWith(".png") ||
+                                fileName.endsWith(".gif");
+                    })
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
+
+            if (filesToDelete.isEmpty()) {
+                System.out.println("삭제할 이미지 파일이 없습니다.");
+                return;
+            }
+
+            // 파일이 존재할 경우에만 삭제 진행
+            filesToDelete.forEach(File::delete);
+            System.out.println("이미지 파일들이 성공적으로 삭제되었습니다.");
+
+        } catch (IOException e) {
+            System.out.println("이미지 삭제 중 오류 발생: " + e.getMessage());
+        }
     }
 
 }
