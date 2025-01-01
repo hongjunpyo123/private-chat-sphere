@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Getter
@@ -61,7 +62,7 @@ public class Utility {
             return new String(decrypted, StandardCharsets.UTF_8);
 
         } catch (Exception e) {
-            return encryptedText;
+            return this.SimpleEncrypt(encryptedText.substring(0, 10));
         }
     }
 
@@ -88,7 +89,7 @@ public class Utility {
     }
 
 
-    @Scheduled(fixedRate = 10800000) //3(10800000)시간마다 키 순환
+    @Scheduled(fixedRate = 3000) //3(10800000)시간마다 키 순환
     public void lotateEncryptKey() {
         this.encryptKey = CreateEncryptKey();
         this.reChatEncrypt(); //3시간마다 메세지 재 암호화 후 저장
@@ -98,9 +99,11 @@ public class Utility {
     public void reChatEncrypt() {
         List<MessageEntity> messageEntityList = messageRepository.findAll();
         messageEntityList.forEach(messageEntity -> {
-            messageEntity.setMessage(encrypt(messageEntity.getMessage(), encryptKey).substring(0, 30));
+            messageEntity.setMessage(encrypt(getOnlyChar() + messageEntity.getMessage() +
+                    getOnlyChar(), encryptKey).substring(0, 30)); //암호화된 문자열을 30개 잘라서 다시 재 암호화
             try{ //파일이 존재할 경우 재 암호화
-                messageEntity.setFilePath(encrypt(messageEntity.getFilePath(), encryptKey).substring(0, 30));
+                messageEntity.setFilePath(encrypt(getOnlyChar() + messageEntity.getFilePath() +
+                        getOnlyChar(), encryptKey).substring(0, 30)); //암호화된 문자열을 30개 잘라서 다시 재 암호화
             } catch (Exception e){ }
             messageRepository.save(messageEntity);
         });
@@ -177,6 +180,14 @@ public class Utility {
         } catch (IOException e) {
             System.out.println("이미지 삭제 중 오류 발생: " + e.getMessage());
         }
+    }
+
+    public static char getOnlyChar() {
+        // 포함할 문자 목록 정의 (a-z, A-Z, 0-9, 특수기호)
+        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:',.<>?/~`";
+        Random random = new Random();
+        // 랜덤하게 하나의 문자 선택
+        return characters.charAt(random.nextInt(characters.length()));
     }
 
 }
