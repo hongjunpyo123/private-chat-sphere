@@ -89,7 +89,7 @@ public class Utility {
     }
 
 
-    @Scheduled(fixedRate = 3000) //3(10800000)시간마다 키 순환
+    @Scheduled(fixedRate = 10800000) //3(10800000)시간마다 키 순환
     public void lotateEncryptKey() {
         this.encryptKey = CreateEncryptKey();
         this.reChatEncrypt(); //3시간마다 메세지 재 암호화 후 저장

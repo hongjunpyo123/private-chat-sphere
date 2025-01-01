@@ -201,17 +201,17 @@ public class Controller {
         return "redirect:login.html";
     }
 
-    @PostMapping("/chatMessageSend")
-    public String chatMessageSend(@ModelAttribute MessageDto messageDto,
-                                  @RequestParam(value = "image", required = false) MultipartFile file,
-                                  HttpSession session){
-        if(!file.isEmpty()){ //file이 존재할 경우
-            service.FileUpload(file, session, messageDto);
-            return "redirect:/chat/" + messageDto.getChatRoomId();
-        }
-        service.chatMessageInsert(messageDto, session);
-        return "redirect:/chat/" + messageDto.getChatRoomId();
-    }
+//    @PostMapping("/chatMessageSend")
+//    public String chatMessageSend(@ModelAttribute MessageDto messageDto,
+//                                  @RequestParam(value = "image", required = false) MultipartFile file,
+//                                  HttpSession session){
+//        if(!file.isEmpty()){ //file이 존재할 경우
+//            service.FileUpload(file, session, messageDto);
+//            return "redirect:/chat/" + messageDto.getChatRoomId();
+//        }
+//        service.chatMessageInsert(messageDto, session);
+//        return "redirect:/chat/" + messageDto.getChatRoomId();
+//    }
 
     @GetMapping("/guestLogin")
     public String guestLogin(HttpSession session){

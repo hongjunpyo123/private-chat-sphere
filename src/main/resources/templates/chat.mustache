@@ -530,23 +530,21 @@
 </div>
 
 <div class="chat-input-container">
-    <form action="/chatMessageSend" method="post" style="display: flex; flex: 1; gap: 12px;" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;">
-        <label for="fileInput" class="attach-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/>
-                <path d="M9 11V9a2 2 0 0 1 2-2h2m4.5-4L19 4.5"/>
-                <path d="M15 8h6v6"/>
-            </svg>
-        </label>
-        <input type="text" class="chat-input" placeholder="메시지를 입력하세요" autocomplete="off" name="message">
-        <input type="hidden" name="chatRoomId" value="{{chat.id}}">
-        <button type="submit" class="send-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-        </button>
-    </form>
+    <input type="file" id="fileInput" name="image" accept="image/*" style="display: none;">
+    <label for="fileInput" class="attach-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/>
+            <path d="M9 11V9a2 2 0 0 1 2-2h2m4.5-4L19 4.5"/>
+            <path d="M15 8h6v6"/>
+        </svg>
+    </label>
+    <input type="text" id="chatInput" class="chat-input" placeholder="메시지를 입력하세요" autocomplete="off">
+    <input type="hidden" id="chatRoomId" value="{{chat.id}}">
+    <button id="sendButton" class="send-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+    </button>
 </div>
 
 <script>
@@ -560,6 +558,56 @@
     const nicknameInputContainer = document.querySelector('.nickname-input-container');
     const nicknameInput = document.querySelector('.nickname-input');
     const nicknameSubmit = document.querySelector('.nickname-submit');
+    const message = document.getElementById('chatInput').value.trim();
+    const chatRoomId = document.getElementById('chatRoomId').value;
+    const fileInput = document.getElementById('fileInput');
+
+
+    document.querySelector('.chat-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 기본 엔터 동작 방지
+            document.getElementById('sendButton').click(); // 버튼 클릭 이벤트 트리거
+        }
+    });
+
+    document.getElementById('sendButton').addEventListener('click', async (event) => {
+    event.preventDefault(); // 폼 기본 제출 동작 방지
+
+    const message = document.getElementById('chatInput').value.trim();
+    const chatRoomId = document.getElementById('chatRoomId').value;
+    const fileInput = document.getElementById('fileInput');
+
+    // 메시지가 비어있는지 확인
+    if (!message && !fileInput.files.length) {
+        return;
+    }
+
+    // 폼 데이터 생성
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('chatRoomId', chatRoomId);
+    if (fileInput.files.length > 0) {
+        formData.append('image', fileInput.files[0]); // 파일 추가
+    }
+
+    try {
+        // 서버로 POST 요청
+        const response = await fetch('/chatMessageSend', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            document.getElementById('chatInput').value = ''; // 입력창 초기화
+            fileInput.value = ''; // 파일 선택 초기화
+        } else {
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('메시지 전송 중 오류가 발생했습니다.');
+    }
+});
+
 
 
 
@@ -691,14 +739,7 @@
         }
     });
 
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
 
-    document.querySelector('.chat-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
 </script>
 </body>
 </html>
