@@ -383,8 +383,8 @@
 <div class="fab">+</div>
 <form class="post-form" action="/chatroom_create" method="post">
     <h3 class="form-title">새로운 채팅방 만들기</h3>
-    <input type="text" name="title" placeholder="주제를 입력하세요 (40자 이내)" maxlength="40" required>
-    <input type="password" name="password" placeholder="입장 비밀번호 (10자 이내)" maxlength="10">
+    <input type="text" name="title" placeholder="주제를 입력하세요" maxlength="40" required>
+    <input type="password" name="password" pattern="[A-Za-z0-9]+" placeholder="입장 비밀번호(영문/숫자만)" maxlength="10">
     <button type="submit">채팅방 만들기</button>
 </form>
 

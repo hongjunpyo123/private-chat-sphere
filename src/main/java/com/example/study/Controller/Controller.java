@@ -6,6 +6,7 @@ import com.example.study.Dto.UserDto;
 import com.example.study.Entity.ChatRoomEntity;
 import com.example.study.Entity.MessageEntity;
 import com.example.study.Service.Service;
+import com.example.study.Utility.Utility;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class Controller {
     @Autowired
     private Service service;
+
+    @Autowired
+    private Utility utility;
 
     @GetMapping("/")
     public String login(){
@@ -173,14 +177,14 @@ public class Controller {
 
     @GetMapping("/chat1")
     public String chat1(@RequestParam String password, Model model, HttpSession session){
-        session.setAttribute("password", password);
+        session.setAttribute("password", utility.SimpleEncrypt(password));
         Long id = (Long) session.getAttribute("chatid");
         ChatRoomEntity chatRoomEntity = service.ChatFindById(id, session);
 
         model.addAttribute("loginuser", session.getAttribute("loginuser"));
         model.addAttribute("chat", chatRoomEntity);
         model.addAttribute("chatroom", chatRoomEntity);
-        if(service.ChatPwCmp(id, password)){
+        if(service.ChatPwCmp(id, utility.SimpleEncrypt(password))){
             return "redirect:/chat/" + session.getAttribute("chatid");
         } else {
             return "redirect:/main";

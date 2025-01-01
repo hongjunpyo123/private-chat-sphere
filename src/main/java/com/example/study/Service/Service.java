@@ -92,6 +92,7 @@ public class Service {
         try{
             chatRoomDto.setCount(0L);
             chatRoomEntity = chatRoomRepository.save(chatRoomDto.toEntity());
+            chatRoomEntity.setPassword(utility.SimpleEncrypt(chatRoomEntity.getPassword()));
             messageEntity.setDate("00:00");
             messageEntity.setChatRoomId(chatRoomEntity.getId());
             messageEntity.setMessage(utility.encrypt("채팅방이 생성되었습니다.", utility.getEncryptKey()));

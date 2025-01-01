@@ -1,6 +1,9 @@
 package com.example.study.Utility;
+import com.example.study.Entity.MessageEntity;
+import com.example.study.Repository.MessageRepository;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,12 +13,17 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 
 @Getter
 @Setter
 @Service
 public class Utility {
     private String encryptKey = "jK9#mN2$pL5@Qx8&";
+
+    @Autowired
+    private MessageRepository messageRepository;
+    private MessageEntity messageEntity = new MessageEntity();
 
     public String encrypt(String text, String key) { //문자열 암호화
         try {
@@ -51,9 +59,44 @@ public class Utility {
         }
     }
 
-    @Scheduled(fixedRate = 1000 * 60 * 60 * 3) //3시간마다 키 순환
+    public String SimpleEncrypt(String text) {
+        StringBuilder encrypted = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            // 각 문자를 숫자로 변환 (a=01, b=02, ... z=26)
+            int num = Character.toLowerCase(c) - 'a' + 1;
+            // 두 자리 숫자로 만들기 (한 자리 숫자 앞에 0 추가)
+            encrypted.append(String.format("%02d", num));
+        }
+        return encrypted.toString();
+    }
+
+    public String SimpleDecrypt(String encrypted) { //간단한 문자열 난독화, 키 필요 없음
+        StringBuilder decrypted = new StringBuilder();
+        // 두 글자씩 읽어서 원래 문자로 변환
+        for (int i = 0; i < encrypted.length(); i += 2) {
+            int num = Integer.parseInt(encrypted.substring(i, i + 2));
+            char c = (char) ('a' + num - 1);
+            decrypted.append(c);
+        }
+        return decrypted.toString();
+    }
+
+
+    @Scheduled(fixedRate = 10800000) //3(10800000)시간마다 키 순환
     public void lotateEncryptKey() {
         this.encryptKey = CreateEncryptKey();
+        this.reChatEncrypt(); //3시간마다 메세지 재 암호화 후 저장
+    }
+
+    public void reChatEncrypt() {
+        List<MessageEntity> messageEntityList = messageRepository.findAll();
+        messageEntityList.forEach(messageEntity -> {
+            messageEntity.setMessage(encrypt(messageEntity.getMessage(), encryptKey).substring(0, 30));
+            try{ //파일이 존재할 경우 재 암호화
+                messageEntity.setFilePath(encrypt(messageEntity.getFilePath(), encryptKey).substring(0, 30));
+            } catch (Exception e){ }
+            messageRepository.save(messageEntity);
+        });
     }
 
     public String CreateEncryptKey() {
