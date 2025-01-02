@@ -51,7 +51,8 @@
 ---
 
 ### 5. 다섯 번째 이미지
-<img width="369" alt="스크린샷 2024-12-29 오후 2 27 36" src="https://github.com/user-attachments/assets/b2aba35d-af04-4e7e-8c65-48e4cc6a8503" />
+![image](https://github.com/user-attachments/assets/64067a1a-b1c6-4ace-b3d5-59e1d46a6f5e)
+
 
 ---
 
