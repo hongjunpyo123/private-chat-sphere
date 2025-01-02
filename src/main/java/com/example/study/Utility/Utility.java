@@ -1,5 +1,6 @@
 package com.example.study.Utility;
 import com.example.study.Entity.MessageEntity;
+import com.example.study.Repository.ChatRoomRepository;
 import com.example.study.Repository.MessageRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,10 @@ public class Utility {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
     private MessageEntity messageEntity = new MessageEntity();
 
     public String encrypt(String text, String key) { //문자열 암호화
@@ -89,11 +94,17 @@ public class Utility {
     }
 
 
-    @Scheduled(fixedRate = 10800000) //3(10800000)시간마다 키 순환
+    @Scheduled(fixedRate = 86400000) //3(10800000)시간마다 키 순환
     public void lotateEncryptKey() {
         this.encryptKey = CreateEncryptKey();
-        this.reChatEncrypt(); //3시간마다 메세지 재 암호화 후 저장
-        this.deleteAllImages(); //3시간마다 이미지 삭제
+        this.reChatEncrypt(); //매일 메세지 재 암호화 후 저장
+        this.deleteAllImages(); //매일 이미지 삭제
+    }
+
+    @Scheduled(fixedRate = 259200000)
+    public void lotateDBclear(){
+        messageRepository.deleteAll(); //3일마다 db내용 초기화
+        chatRoomRepository.deleteAll(); //3일마다 db내용 초기화
     }
 
     public void reChatEncrypt() {
@@ -189,5 +200,4 @@ public class Utility {
         // 랜덤하게 하나의 문자 선택
         return characters.charAt(random.nextInt(characters.length()));
     }
-
 }

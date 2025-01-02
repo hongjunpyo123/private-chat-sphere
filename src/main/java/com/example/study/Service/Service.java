@@ -10,6 +10,7 @@ import com.example.study.Repository.ChatRoomRepository;
 import com.example.study.Repository.MessageRepository;
 import com.example.study.Repository.UserRepository;
 import com.example.study.Utility.Utility;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.Utilities;
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.LockInfo;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -117,9 +119,13 @@ public class Service {
     public ChatRoomEntity ChatFindById(Long id, HttpSession session){
 
         session.setAttribute("chatid", id);
-        ChatRoomEntity chatRoomEntity1 = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
-        Long count = chatRoomEntity1.getCount();
-        session.setAttribute("count", count);
+        try{
+            ChatRoomEntity chatRoomEntity1 = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
+            Long count = chatRoomEntity1.getCount();
+            session.setAttribute("count", count);
+        } catch (Exception e){
+            return null; //엔티티가 null일 경우  / 방 입장 링크의 방이 존재하지 않을 경우
+        }
 
 
         return chatRoomRepository.findById(id).orElse(null);
@@ -168,19 +174,22 @@ public class Service {
         return messageEntityList;
     }
 
-    public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session) {
-        //메세지가 없을 때 예외처리
-        if(messageDto.getMessage().isEmpty()){
-            return false;
-        }
-
-
+    public Boolean chatMessageInsert(MessageDto messageDto, HttpSession session,  HttpServletResponse response) throws IOException {
         //채팅방을 찾고 count를 1 증가시킨 후 저장
         chatRoomEntity = chatRoomRepository.findById((Long) session.getAttribute("chatid")).orElse(null);
-        Long count = chatRoomEntity.getCount() + 1;
-        chatRoomEntity.setCount(count);
-        chatRoomRepository.save(chatRoomEntity);
+        try {
+            Long count = chatRoomEntity.getCount() + 1;
+            chatRoomEntity.setCount(count);
+            chatRoomRepository.save(chatRoomEntity);
+        } catch (Exception e) {
+            response.sendRedirect("/err.html");
+        }
         //----------------------------------------------
+
+        //메세지가 없을 때 예외처리
+        if (messageDto.getMessage().isEmpty()) {
+            return false;
+        }
 
         messageDto.setDate(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))); //현재 시간 저장
         messageDto.setWriter((String) session.getAttribute("loginuser")); //세션에 저장된 로그인한 유저의 닉네임을 작성자로 저장
@@ -189,10 +198,10 @@ public class Service {
         String encryptString = utility.encrypt(messageDto.getMessage(), utility.getEncryptKey());
         messageDto.setMessage(encryptString);
 
-        try{
+        try {
             messageRepository.save(messageDto.toEntity());
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error: " + e);
             return false;
         }
@@ -200,12 +209,19 @@ public class Service {
 
 
     //rest-api
-    public MessageDto messageFindLast(HttpSession session){
+    public MessageDto messageFindLast(HttpSession session) throws Exception{
         Long chatRoomId = (Long) session.getAttribute("chatid");
         String writer = (String) session.getAttribute("loginuser");
         Long count = (Long) session.getAttribute("count");
-        Long chatRoomCount = chatRoomRepository.findById(chatRoomId).orElse(null).getCount();
 
+//        System.out.println("chatRommid : " + chatRoomId);
+//        System.out.println("writer : " + writer);
+//        System.out.println("count : " + count);
+
+
+        Long chatRoomCount = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new Exception("ChatRoom이 존재하지 않습니다. ID: " + chatRoomId))
+                .getCount(); //예외처리
         MessageDto messageDto = messageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId).toDto();
 
         //메세지 복호화
@@ -221,7 +237,7 @@ public class Service {
         }
 
         if(chatRoomCount != count){
-            session.setAttribute("count", count+1);
+            session.setAttribute("count", chatRoomCount);
             return messageDto;
         } else {
             return null;

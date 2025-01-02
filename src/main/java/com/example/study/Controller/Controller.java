@@ -148,6 +148,11 @@ public class Controller {
     @GetMapping("/chat/{id}")
     public String chat(@PathVariable Long id, Model model, HttpSession session){
         ChatRoomEntity chatRoomEntity = service.ChatFindById(id, session);
+
+        if(chatRoomEntity == null){
+            return "redirect:/err.html";
+        }
+
         List<MessageEntity> messageEntityList = service.chatMessageFindAll(id);
         String loginuser = (String) session.getAttribute("loginuser");
 

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정보를 찾을 수 없습니다</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+
+        .warning-container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        .warning-logo {
+            font-size: 32px;
+            font-weight: 600;
+            color: #dc3545;
+            letter-spacing: -0.5px;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .warning-logo .icon {
+            font-size: 48px;
+            color: #dc3545;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .warning-message {
+            font-size: 18px;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .warning-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .warning-button:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="warning-container">
+    <div class="warning-logo">
+        <span class="icon">&#9888;</span> 정보 없음
+    </div>
+    <div class="warning-message">
+        요청하신 정보를 찾을 수 없습니다. <br>
+        입력한 내용을 다시 확인해주세요.
+    </div>
+    <button class="warning-button" onclick="goBack()">돌아가기</button>
+</div>
+
+<script>
+    function goBack() {
+        window.location.href = '/intro.html';
+    }
+</script>
+</body>
+</html>
