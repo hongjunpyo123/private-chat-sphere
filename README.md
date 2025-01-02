@@ -64,7 +64,8 @@
 ---
 
 ### 7. 일곱 번째 이미지
-<img width="369" alt="스크린샷 2024-12-29 오후 2 27 47" src="https://github.com/user-attachments/assets/8eac2b30-4891-44dc-a8d4-b3d23f3dd124" />
+![image](https://github.com/user-attachments/assets/6e0d2e7a-c15d-4d43-b281-216604e08458)
+
 
 
 
