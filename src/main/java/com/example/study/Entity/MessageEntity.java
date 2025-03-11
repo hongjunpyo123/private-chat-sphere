@@ -21,7 +21,7 @@ public class MessageEntity {
     @Column(length = 255)
     private String writer;
 
-    @Column(length = 255)
+    @Column(length = 1023)
     private String message;
 
     @Column(length = 255)

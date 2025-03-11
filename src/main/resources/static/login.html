@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인</title>
+
+
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4285f4">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="채팅 앱">
+    <link rel="apple-touch-icon" href="/icons/chaticon.png">
+
+    <title>privateChat</title>
     <style>
         * {
             margin: 0;
@@ -231,6 +241,7 @@
         </div>
 
         <button type="submit" class="login-button">로그인</button>
+        <button type="button" id="installBtn" style="margin-top: 16px; width: 100%; padding: 12px; background-color: #4CAF50; color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer; display: none;">앱 설치하기</button>
 
         <div class="links-container">
             <a href="/register">회원가입하기</a>
@@ -256,6 +267,59 @@
             passwordToggle.textContent = passwordVisible ? '🔒' : '👁';
         });
     });
+
+
+
+
+    // PWA 설치 관련 코드 추가
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // 자동 프롬프트 방지
+        e.preventDefault();
+        // 이벤트 저장
+        deferredPrompt = e;
+        // 버튼 표시
+        installBtn.style.display = 'block';
+
+        console.log('설치 프롬프트 준비됨');
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+            console.log('설치 프롬프트를 사용할 수 없습니다');
+            return;
+        }
+        // 프롬프트 표시
+        deferredPrompt.prompt();
+        // 사용자 선택 결과
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`사용자 선택: ${outcome}`);
+        // 이벤트 초기화
+        deferredPrompt = null;
+        // 버튼 숨기기
+        installBtn.style.display = 'none';
+    });
+
+    // 이미 설치된 경우
+    window.addEventListener('appinstalled', (e) => {
+        console.log('앱이 설치되었습니다!');
+        if (installBtn) installBtn.style.display = 'none';
+    });
+
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('서비스 워커가 등록되었습니다:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('서비스 워커 등록 실패:', error);
+        });
+    });
+  }
 </script>
+
 </body>
 </html>

@@ -125,6 +125,62 @@
             word-break: break-all;
         }
 
+        .key-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .key-checkbox {
+            margin-right: 10px;
+        }
+
+        .key-button {
+            padding: 6px 12px;
+            background-color: #3182f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .key-button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .key-button:hover:not(:disabled) {
+            background-color: #1c6feb;
+        }
+
+        .key-button-refresh {
+            margin-left: 5px;
+            background-color: #10b981;
+        }
+
+        .key-button-refresh:hover:not(:disabled) {
+            background-color: #059669;
+        }
+
+        .encryption-key-input,
+        .decryption-key-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .encryption-key-input:disabled,
+        .decryption-key-input:disabled {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+        }
+
         .button-group {
             margin-top: 32px;
         }
@@ -249,7 +305,24 @@
             </div>
             <div class="info-item">
                 <div class="info-label">내 암호화 키</div>
-                <div class="info-value">E5F8-H2J9-K4M7-N1P6-R3T8</div>
+                <input type="text" id="encryption-key-input" class="encryption-key-input" placeholder="암호화 키를 입력하세요" disabled>
+                <div class="key-controls">
+                    <label class="key-checkbox">
+                        <input type="checkbox" id="use-encryption-key"> 수정
+                    </label>
+                    <button id="confirm-encryption-key" class="key-button" disabled>확인</button>
+                    <button id="refresh-encryption-key" class="key-button key-button-refresh" disabled>생성</button>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">내 복호화 키</div>
+                <input type="text" id="decryption-key-input" class="decryption-key-input" placeholder="복호화 키를 입력하세요" disabled>
+                <div class="key-controls">
+                    <label class="key-checkbox">
+                        <input type="checkbox" id="use-decryption-key"> 수정
+                    </label>
+                    <button id="confirm-decryption-key" class="key-button" disabled>확인</button>
+                </div>
             </div>
         </div>
         <div class="button-group">
@@ -279,6 +352,99 @@
     window.onpopstate = function () {
         history.go(1);
     };
+</script>
+
+<script type="module">
+    import { encrypt, decrypt, generateKey } from '/E2EEmodule.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // 이미 저장된 키가 있는지 확인
+        let storedEncryptionKey = localStorage.getItem('encryptionKey');
+        let storedDecryptionKey = localStorage.getItem('decryptionKey');
+        let keyInfo;
+
+        // 암호화 키 입력 필드
+        const encryptionKeyInput = document.getElementById('encryption-key-input');
+        // 복호화 키 입력 필드
+        const decryptionKeyInput = document.getElementById('decryption-key-input');
+
+        if (!storedEncryptionKey) {
+            // 키가 없으면 새로 생성
+            keyInfo = generateKey();
+            storedEncryptionKey = keyInfo.base64Key;
+        } else {
+            keyInfo = { base64Key: storedEncryptionKey };
+        }
+
+        // 암호화 키 정보 표시
+        if (encryptionKeyInput && storedEncryptionKey) {
+            encryptionKeyInput.value = storedEncryptionKey;
+        }
+
+        // 복호화 키 정보 표시
+        if (decryptionKeyInput && storedDecryptionKey) {
+            decryptionKeyInput.value = storedDecryptionKey;
+        }
+
+        // 체크박스 및 버튼 이벤트 리스너 설정
+        const useEncryptionKeyCheckbox = document.getElementById('use-encryption-key');
+        const confirmEncryptionKeyButton = document.getElementById('confirm-encryption-key');
+        const refreshEncryptionKeyButton = document.getElementById('refresh-encryption-key');
+        const useDecryptionKeyCheckbox = document.getElementById('use-decryption-key');
+        const confirmDecryptionKeyButton = document.getElementById('confirm-decryption-key');
+
+        // 암호화 키 체크박스 이벤트
+        useEncryptionKeyCheckbox.addEventListener('change', function() {
+            encryptionKeyInput.disabled = !this.checked;
+            confirmEncryptionKeyButton.disabled = !this.checked;
+            refreshEncryptionKeyButton.disabled = !this.checked;
+        });
+
+        // 복호화 키 체크박스 이벤트
+        useDecryptionKeyCheckbox.addEventListener('change', function() {
+            decryptionKeyInput.disabled = !this.checked;
+            confirmDecryptionKeyButton.disabled = !this.checked;
+        });
+
+        // 암호화 키 확인 버튼 이벤트
+        confirmEncryptionKeyButton.addEventListener('click', function() {
+            const encryptionKey = encryptionKeyInput.value.trim();
+            if (encryptionKey) {
+                localStorage.setItem('encryptionKey', encryptionKey);
+
+                // 복호화 키도 함께 저장
+                localStorage.setItem('decryptionKey', encryptionKey);
+                decryptionKeyInput.value = encryptionKey;
+
+                alert('암호화 키와 복호화 키가 저장되었습니다.');
+            } else {
+                alert('암호화 키를 입력해주세요.');
+            }
+        });
+
+        // 암호화 키 갱신 버튼 이벤트
+        refreshEncryptionKeyButton.addEventListener('click', function() {
+            const newKeyInfo = generateKey();
+            const newKey = newKeyInfo.base64Key;
+
+            // 암호화 키와 복호화 키 모두 업데이트
+            encryptionKeyInput.value = newKey;
+            decryptionKeyInput.value = newKey;
+
+            alert('새로운 키가 생성되었습니다. 확인 버튼을 눌러 저장하세요.');
+        });
+
+        // 복호화 키 확인 버튼 이벤트
+        confirmDecryptionKeyButton.addEventListener('click', function() {
+            const decryptionKey = decryptionKeyInput.value.trim();
+            if (decryptionKey) {
+                localStorage.setItem('decryptionKey', decryptionKey);
+                alert('복호화 키가 저장되었습니다.');
+            } else {
+                alert('복호화 키를 입력해주세요.');
+            }
+        });
+    });
 </script>
 </body>
 </html>

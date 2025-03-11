@@ -114,7 +114,7 @@ public class Controller {
     public String enterCode(@RequestParam String code, HttpSession session){
         String enterCode1 = "741345";
         String enterCode2 = "384729";
-        String enterCode3 = "696969";
+        String enterCode3 = "111111";
         if(code.equals(enterCode1) || code.equals(enterCode2) || code.equals(enterCode3)){
             session.setAttribute("enterCode", "true");
             return "redirect:/login.html";
